@@ -4,15 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 const (
+	env   = "ENV"
 	debug = "DEBUG"
 
 	dbHost     = "DB_HOST"
 	dbPort     = "DB_PORT"
 	dbUser     = "DB_USER"
-	dbPassword = "DB_PASSWORD"
+	dbPassword = "DB_PASS"
 	dbName     = "DB_NAME"
 
 	tgToken   = "TG_TOKEN"
@@ -20,7 +22,8 @@ const (
 )
 
 var (
-	ErrEnvNotExists = errors.New("environment variable not exists")
+	ErrEnvNotExists  = errors.New("environment variable not exists")
+	ErrEnvNotCorrect = errors.New("invalid environment variable")
 )
 
 type ServiceConfig struct {
@@ -30,15 +33,16 @@ type ServiceConfig struct {
 }
 
 type AppEnvs struct {
-	DebugFlag string
+	Env       string
+	DebugFlag bool
 }
 
 type DbEnvs struct {
-	DbHost string
-	DbPort string
-	DbUser string
-	DbPass string
-	DbName string
+	Host string
+	Port string
+	User string
+	Pass string
+	Name string
 }
 
 type TelegramEnvs struct {
@@ -70,12 +74,22 @@ func New() (*ServiceConfig, error) {
 }
 
 func appEnvs() (*AppEnvs, error) {
-	debugFlag, ok := os.LookupEnv(debug)
+	debugStr, ok := os.LookupEnv(debug)
 	if !ok {
 		return nil, fmt.Errorf("%w: %s", ErrEnvNotExists, debug)
 	}
 
-	return &AppEnvs{DebugFlag: debugFlag}, nil
+	df, err := strconv.ParseBool(debugStr)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %s", ErrEnvNotCorrect, debugStr)
+	}
+
+	e, ok := os.LookupEnv(env)
+	if !ok {
+		return nil, fmt.Errorf("%w: %s", ErrEnvNotExists, env)
+	}
+
+	return &AppEnvs{DebugFlag: df, Env: e}, nil
 }
 
 func dbEnvsEnvs() (*DbEnvs, error) {
@@ -104,7 +118,7 @@ func dbEnvsEnvs() (*DbEnvs, error) {
 		return nil, fmt.Errorf("%w: %s", ErrEnvNotExists, dbName)
 	}
 
-	return &DbEnvs{DbPort: port, DbHost: host, DbUser: user, DbPass: pass, DbName: name}, nil
+	return &DbEnvs{Port: port, Host: host, User: user, Pass: pass, Name: name}, nil
 }
 
 func tgEnvs() (*TelegramEnvs, error) {
