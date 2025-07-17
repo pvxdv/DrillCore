@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	tgClient "drillCore/internal/clients/telergam"
 	"drillCore/internal/config"
+	eventconsummer "drillCore/internal/event-consummer"
+	"drillCore/internal/events/telegram"
 	"drillCore/internal/storage/debt/postgres"
 	"fmt"
 	"go.uber.org/zap"
@@ -30,6 +33,18 @@ func main() {
 	}
 
 	storage, err := postgres.New(ctx, cfg.DbEnvs, logger)
+
+	eventsProcessor := telegram.New(
+		tgClient.New(cfg.TelegramEnvs),
+		storage,
+	)
+
+	logger.Info("Starting telegram bot")
+
+	consumer := eventconsummer.New(eventsProcessor, eventsProcessor, cfg.TelegramEnvs.BatchSize)
+	if err := consumer.Start(); err != nil {
+		logger.Fatalf("service stopped:%v", err)
+	}
 
 }
 

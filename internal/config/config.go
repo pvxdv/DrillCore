@@ -17,8 +17,9 @@ const (
 	dbPassword = "DB_PASS"
 	dbName     = "DB_NAME"
 
-	tgToken   = "TG_TOKEN"
-	tgBaseURL = "TG_BASE_URL"
+	tgToken     = "TG_TOKEN"
+	tgBaseURL   = "TG_BASE_URL"
+	tgBatchSize = "TG_BATCH_SIZE"
 )
 
 var (
@@ -46,8 +47,9 @@ type DbEnvs struct {
 }
 
 type TelegramEnvs struct {
-	Token   string
-	BaseUrl string
+	Token     string
+	BaseUrl   string
+	BatchSize int
 }
 
 func New() (*ServiceConfig, error) {
@@ -132,5 +134,15 @@ func tgEnvs() (*TelegramEnvs, error) {
 		return nil, fmt.Errorf("%w: %s", ErrEnvNotExists, tgBaseURL)
 	}
 
-	return &TelegramEnvs{Token: token, BaseUrl: bUrl}, nil
+	bSizeStr, ok := os.LookupEnv(tgBatchSize)
+	if !ok {
+		return nil, fmt.Errorf("%w: %s", ErrEnvNotExists, tgBatchSize)
+	}
+
+	bSize, err := strconv.Atoi(bSizeStr)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %s", ErrEnvNotCorrect, tgBatchSize)
+	}
+
+	return &TelegramEnvs{Token: token, BaseUrl: bUrl, BatchSize: bSize}, nil
 }

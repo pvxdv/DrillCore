@@ -12,12 +12,12 @@ import (
 	"go.uber.org/zap"
 )
 
-type Storage struct {
+type DebtStorage struct {
 	db     *pgx.Conn
 	logger *zap.SugaredLogger
 }
 
-func New(ctx context.Context, cfg *config.DbEnvs, logger *zap.SugaredLogger) (*Storage, error) {
+func New(ctx context.Context, cfg *config.DbEnvs, logger *zap.SugaredLogger) (*DebtStorage, error) {
 	conn, err := pgx.Connect(ctx, fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host, cfg.Port, cfg.User, cfg.Pass, cfg.Name))
@@ -30,17 +30,17 @@ func New(ctx context.Context, cfg *config.DbEnvs, logger *zap.SugaredLogger) (*S
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	return &Storage{db: conn, logger: logger}, nil
+	return &DebtStorage{db: conn, logger: logger}, nil
 }
 
-func (s *Storage) Close(ctx context.Context) error {
+func (s *DebtStorage) Close(ctx context.Context) error {
 	if err := s.db.Close(ctx); err != nil {
 		return fmt.Errorf("failed to close database connection: %w", err)
 	}
 	return nil
 }
 
-func (s *Storage) Save(ctx context.Context, debt *model.Debt) (int64, error) {
+func (s *DebtStorage) Save(ctx context.Context, debt *model.Debt) (int64, error) {
 	q := `INSERT INTO debt (user_id, description, amount, return_date)
 		 VALUES ($1, $2, $3, $4)
 		 RETURNING id`
@@ -60,7 +60,7 @@ func (s *Storage) Save(ctx context.Context, debt *model.Debt) (int64, error) {
 	return debtID, nil
 }
 
-func (s *Storage) Debts(ctx context.Context, userID int64) ([]*model.Debt, error) {
+func (s *DebtStorage) Debts(ctx context.Context, userID int64) ([]*model.Debt, error) {
 	q := `SELECT id, user_id, description, amount, return_date
 		 FROM debt WHERE user_id = $1`
 
@@ -98,7 +98,7 @@ func (s *Storage) Debts(ctx context.Context, userID int64) ([]*model.Debt, error
 	return res, nil
 }
 
-func (s *Storage) Update(ctx context.Context, debt model.Debt) error {
+func (s *DebtStorage) Update(ctx context.Context, debt model.Debt) error {
 	q := `UPDATE debt 
 		 SET user_id = $1, 
 		     description = $2, 
@@ -125,7 +125,7 @@ func (s *Storage) Update(ctx context.Context, debt model.Debt) error {
 	return nil
 }
 
-func (s *Storage) Delete(ctx context.Context, id int64) error {
+func (s *DebtStorage) Delete(ctx context.Context, id int64) error {
 	q := "DELETE FROM debt WHERE id = $1"
 
 	result, err := s.db.Exec(ctx, q, id)
