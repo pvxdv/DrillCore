@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"drillCore/internal/config"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"io"
 	"net/http"
 	"net/url"
@@ -17,6 +17,7 @@ type Client struct {
 	host     string
 	basePath string
 	client   http.Client
+	logger   *zap.SugaredLogger
 }
 
 const (
@@ -24,11 +25,12 @@ const (
 	sendMessageMethod = "sendMessage"
 )
 
-func New(cfg *config.TelegramEnvs) *Client {
+func New(cfg *config.TelegramEnvs, logger *zap.SugaredLogger) *Client {
 	return &Client{
 		host:     cfg.BaseUrl,
 		basePath: newBasePath(cfg.Token),
 		client:   http.Client{},
+		logger:   logger,
 	}
 }
 
@@ -53,7 +55,7 @@ func (c *Client) Updates(offset int, limit int) ([]Update, error) {
 	}
 
 	if !res.Ok {
-		return nil, errors.New("failed to get updates: telegram api returned not ok")
+		c.logger.Debugf("failed to get updates: telegram api returned not ok:%v", err)
 	}
 
 	return res.Result, nil

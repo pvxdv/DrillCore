@@ -2,6 +2,8 @@ package eventconsummer
 
 import (
 	"drillCore/internal/events"
+	"drillCore/internal/events/telegram"
+	"errors"
 	"log"
 	"time"
 )
@@ -24,13 +26,13 @@ func (c *Consumer) Start() error {
 	for {
 		gotEvents, err := c.fetcher.Fetch(c.batchSize)
 		if err != nil {
+			if errors.Is(err, telegram.ErrNoUpdatesFound) {
+				time.Sleep(1 * time.Second)
+
+				continue
+			}
+
 			log.Printf("Error fetching events: %v", err)
-
-			continue
-		}
-
-		if len(gotEvents) == 0 {
-			time.Sleep(1 * time.Second)
 
 			continue
 		}

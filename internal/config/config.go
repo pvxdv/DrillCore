@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	env   = "ENV"
-	debug = "DEBUG"
+	env   = "APP_ENV"
+	debug = "APP_DEBUG"
 
 	dbHost     = "DB_HOST"
 	dbPort     = "DB_PORT"

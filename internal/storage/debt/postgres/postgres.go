@@ -60,6 +60,25 @@ func (s *DebtStorage) Save(ctx context.Context, debt *model.Debt) (int64, error)
 	return debtID, nil
 }
 
+func (s *DebtStorage) Get(ctx context.Context, id int64) (*model.Debt, error) {
+	q := `SELECT id, user_id, description, amount, return_date FROM debt WHERE id = $1`
+
+	var d model.Debt
+	var date sql.NullTime
+	err := s.db.QueryRow(ctx, q, id).Scan(&d.ID, &d.UserID, &d.Description, &d.Amount, &date)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, debtStorage.ErrDebtNotFound
+		}
+		return nil, fmt.Errorf("failed to get debt: %w", err)
+	}
+
+	if date.Valid {
+		d.ReturnDate = &date.Time
+	}
+	return &d, nil
+}
+
 func (s *DebtStorage) Debts(ctx context.Context, userID int64) ([]*model.Debt, error) {
 	q := `SELECT id, user_id, description, amount, return_date
 		 FROM debt WHERE user_id = $1`
@@ -98,12 +117,12 @@ func (s *DebtStorage) Debts(ctx context.Context, userID int64) ([]*model.Debt, e
 	return res, nil
 }
 
-func (s *DebtStorage) Update(ctx context.Context, debt model.Debt) error {
+func (s *DebtStorage) Update(ctx context.Context, debt *model.Debt) error {
 	q := `UPDATE debt 
 		 SET user_id = $1, 
 		     description = $2, 
 		     amount = $3, 
-		     return_date = $4, 
+		     return_date = $4 
 		 WHERE id = $5`
 
 	result, err := s.db.Exec(ctx, q,

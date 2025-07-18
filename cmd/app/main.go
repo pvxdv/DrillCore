@@ -5,7 +5,11 @@ import (
 	tgClient "drillCore/internal/clients/telergam"
 	"drillCore/internal/config"
 	eventconsummer "drillCore/internal/event-consummer"
+	"drillCore/internal/events"
 	"drillCore/internal/events/telegram"
+	"drillCore/internal/events/telegram/handlers/command"
+	"drillCore/internal/events/telegram/handlers/debt"
+	mainmenu "drillCore/internal/events/telegram/handlers/main"
 	"drillCore/internal/storage/debt/postgres"
 	"fmt"
 	"go.uber.org/zap"
@@ -32,11 +36,24 @@ func main() {
 		os.Exit(1)
 	}
 
+	logger.Debugf("resived config: %+v", cfg)
+
 	storage, err := postgres.New(ctx, cfg.DbEnvs, logger)
 
+	tg := tgClient.New(cfg.TelegramEnvs, logger)
+	sm := events.NewSessionManager()
+
+	debtH := debt.New(ctx, tg, sm, storage, logger)
+	cmdH := command.New(tg, logger)
+	menuH := mainmenu.New(tg, logger)
+
 	eventsProcessor := telegram.New(
-		tgClient.New(cfg.TelegramEnvs),
-		storage,
+		tg,
+		sm,
+		logger,
+		debtH,
+		cmdH,
+		menuH,
 	)
 
 	logger.Info("Starting telegram bot")

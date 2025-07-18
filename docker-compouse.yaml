@@ -1,0 +1,55 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_ENV=${BUILD_ENV:-local} # prod/dev/local (default_value:local)
+    image: drill_core-app
+    environment:
+      #app config
+      - APP_ENV=${BUILD_ENV:-local} # prod/dev/local (default_value:local)
+      - APP_DEBUG=${APP_DEBUG}
+      #postgres config
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      #telegram
+      - TG_TOKEN=${T_TOKEN}
+      - TG_BASE_URL=${T_BASE_URL}
+      - TG_BATCH_SIZE=${T_BATCH}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrations:
+    image: drill_core-app
+    command: [ "goose", "up" ]
+    environment:
+      GOOSE_DRIVER: ${DB_DRIVER}
+      GOOSE_DBSTRING: ${DB_DRIVER}://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable
+      GOOSE_MIGRATION_DIR: /app/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
+    external: false
