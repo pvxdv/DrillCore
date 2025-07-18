@@ -1,20 +1,20 @@
 package eventconsummer
 
 import (
-	"drillCore/internal/events"
 	"drillCore/internal/events/telegram"
+	"drillCore/internal/session"
 	"errors"
 	"log"
 	"time"
 )
 
 type Consumer struct {
-	fetcher   events.Fetcher
-	processor events.Processor
+	fetcher   session.Fetcher
+	processor session.Processor
 	batchSize int
 }
 
-func New(fetcher events.Fetcher, processor events.Processor, batchSize int) Consumer {
+func New(fetcher session.Fetcher, processor session.Processor, batchSize int) Consumer {
 	return Consumer{
 		fetcher:   fetcher,
 		processor: processor,
@@ -45,7 +45,7 @@ func (c *Consumer) Start() error {
 	}
 }
 
-func (c *Consumer) handleEvents(event []events.Event) error {
+func (c *Consumer) handleEvents(event []session.Event) error {
 	for _, e := range event {
 		log.Printf("got new event: %s", e.Text)
 

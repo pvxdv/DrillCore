@@ -6,6 +6,7 @@ import (
 	"drillCore/internal/events"
 	"drillCore/internal/events/telegram"
 	"drillCore/internal/model"
+	"drillCore/internal/session"
 	debtStorage "drillCore/internal/storage/debt"
 	"fmt"
 	"go.uber.org/zap"
@@ -18,9 +19,10 @@ import (
 const (
 	prefix = "debt_"
 
-	cmdMenu   = "menu"
-	cmdList   = "list"
-	cmdCancel = "cancel"
+	cmdMenu     = "menu"
+	cmdList     = "list"
+	cmdCancel   = "cancel"
+	cmdMainMenu = "main_menu"
 
 	flowAdd    = "add"
 	flowEdit   = "edit"
@@ -79,10 +81,10 @@ type Handler struct {
 	logger     *zap.SugaredLogger
 	storage    debtStorage.DebtStorage
 	ctx        context.Context
-	sessionMgr *events.SessionManager
+	sessionMgr *session.Manager
 }
 
-func New(ctx context.Context, tg *tgClient.Client, sm *events.SessionManager, storage debtStorage.DebtStorage, logger *zap.SugaredLogger) *Handler {
+func New(ctx context.Context, tg *tgClient.Client, sm *session.Manager, storage debtStorage.DebtStorage, logger *zap.SugaredLogger) *Handler {
 	return &Handler{
 		logger:     logger,
 		storage:    storage,
@@ -102,12 +104,12 @@ func (h *Handler) CanHandle(event events.Event) bool {
 	}
 
 	if event.Type == events.Message {
-		meta, err := meta(event)
+		meta, err := telegram.ExtractMeta(event)
 		if err != nil {
 			return false
 		}
-		if session, exists := h.sessionMgr.Get(meta.UserID); exists {
-			return session.HandlerID == h.ID()
+		if s, exists := h.sessionMgr.Get(meta.UserID); exists {
+			return s.HandlerID == h.ID()
 		}
 	}
 
@@ -115,9 +117,9 @@ func (h *Handler) CanHandle(event events.Event) bool {
 }
 
 func (h *Handler) Handle(event events.Event) error {
-	meta, err := meta(event)
+	meta, err := telegram.ExtractMeta(event)
 	if err != nil {
-		return fmt.Errorf("get meta: %w", err)
+		return fmt.Errorf("failed to extract meta: %w", err)
 	}
 
 	h.logger.Debugf("handling event: event=%+v, Text='%s'", event, event.Text)
@@ -127,8 +129,8 @@ func (h *Handler) Handle(event events.Event) error {
 		return h.showDebtMenu(meta.ChatID)
 	}
 
-	if session, exists := h.sessionMgr.Get(meta.UserID); exists {
-		if s, ok := session.State.(*State); ok {
+	if ses, exists := h.sessionMgr.Get(meta.UserID); exists {
+		if s, ok := ses.State.(*State); ok {
 			return h.handleFlow(event, meta, s)
 		}
 	}
@@ -155,7 +157,7 @@ func (h *Handler) Handle(event events.Event) error {
 	case flowAdd, flowEdit, flowDelete, flowDate, flowPay:
 		return h.handleFlow(event, meta, nil)
 	default:
-		return h.sendErrorMessage(meta.ChatID, fmt.Sprintf("unknown command: %s"+cmdRaw))
+		return h.sendErrorMessage(meta.ChatID, "UNKNOWN DRILL COMMAND: "+cmdRaw)
 	}
 }
 
@@ -227,15 +229,15 @@ func (h *Handler) handleFlow(event events.Event, meta telegram.Meta, state *Stat
 }
 
 func (h *Handler) showDebtMenu(chatID int) error {
-	return h.sendWithKeyboard(chatID, "Выберите действие:", h.debtsKeyboard())
+	return h.sendWithKeyboard(chatID, "🌀 DRILL INTERFACE READY", h.debtsKeyboard())
 }
 
 func (h *Handler) listDebts(chatID, userID int) error {
 	debts, err := h.storage.Debts(h.ctx, int64(userID))
 	if err != nil {
+		h.logger.Errorf("failed to get debts: %v", err)
 		h.sessionMgr.Delete(userID)
-		h.logger.Errorf("SPIRAL POWER FAILURE: %v", err)
-		return h.sendErrorMessage(chatID, "🚨 DEBT BRILL SYSTEM OFFLINE! 🚨")
+		return h.sendErrorMessage(chatID, "DEBT SCAN FAILED! DEBT DRILL SYSTEM OFFLINE! 🚨")
 	}
 
 	if len(debts) == 0 {
@@ -252,7 +254,6 @@ func (h *Handler) listDebts(chatID, userID int) error {
 		)
 	}
 
-	// Сортируем: сначала просроченные (враги ближе всего), затем по дате
 	sort.Slice(debts, func(i, j int) bool {
 		now := time.Now()
 		iOverdue := debts[i].ReturnDate != nil && debts[i].ReturnDate.Before(now)
@@ -281,21 +282,20 @@ func (h *Handler) listDebts(chatID, userID int) error {
 	var sb strings.Builder
 	sb.WriteString("─────────🌀─────────\n\n")
 	sb.WriteString(debtTitles[rand.Intn(len(debtTitles))] + "\n\n")
-	sb.WriteString("─────────🌀─────────\n\n") // Спиральный разделитель
+	sb.WriteString("─────────🌀─────────\n\n")
 
 	for i, debt := range debts {
-		// Чередующиеся маркеры в стиле Team Gurren
-		marker := "💢" // Нечетные
+		marker := "💢"
 		if i%2 == 0 {
-			marker = "🌀" // Четные
+			marker = "🌀"
 		}
 		if debt.ReturnDate != nil && debt.ReturnDate.Before(time.Now()) {
-			marker = "☠️" // Просрочки - череп
+			marker = "☠️"
 		}
 
 		sb.WriteString(fmt.Sprintf(
 			"%s %s\n"+
-				"   💥 SPIRAL COST: %s₽\n"+ // Изменено на SPIRAL COST
+				"   💥 SPIRAL COST: %s₽\n"+
 				"   %s\n\n",
 			marker,
 			strings.ToUpper(debt.Description),
@@ -325,7 +325,6 @@ func getDebtStatus(debt *model.Debt) string {
 	return fmt.Sprintf("⏳ GIGA DRILL CHARGE: %d DAYS", days)
 }
 
-// Функция форматирования денег (оставляем без изменений)
 func formatMoney(amount int64) string {
 	str := fmt.Sprintf("%d", amount)
 	var res []byte
@@ -338,14 +337,6 @@ func formatMoney(amount int64) string {
 	return string(res)
 }
 
-func meta(event events.Event) (telegram.Meta, error) {
-	res, ok := event.Meta.(telegram.Meta)
-	if !ok {
-		return telegram.Meta{}, fmt.Errorf("failed to process meta: %w", telegram.ErrUnknownMetaType)
-	}
-	return res, nil
-}
-
 func (h *Handler) sendMessage(chatID int, text string) error {
 	return h.tg.SendMessage(chatID, text)
 }
@@ -355,5 +346,5 @@ func (h *Handler) sendWithKeyboard(chatID int, text string, keyboard tgClient.Re
 }
 
 func (h *Handler) sendErrorMessage(chatID int, message string) error {
-	return h.sendWithKeyboard(chatID, "⚠️ "+message, h.debtsKeyboard())
+	return h.sendWithKeyboard(chatID, "🚨 DRILL FAILURE: "+message, h.debtsKeyboard())
 }

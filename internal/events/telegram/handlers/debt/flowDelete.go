@@ -18,13 +18,17 @@ func (h *Handler) handleDeleteFlow(chatID, userID int, step string, data string)
 	case "start":
 		debts, err := h.storage.Debts(h.ctx, int64(userID))
 		if err != nil {
-			h.logger.Errorf("Ошибка получения списка долгов: %v", err)
+			h.logger.Errorf("failed to get debts: %v", err)
+
 			h.sessionMgr.Delete(userID)
-			return h.sendErrorMessage(chatID, "Ошибка получения списка долгов")
+			return h.sendErrorMessage(chatID, "COSMIC DEBT RADAR OFFLINE! 🚨")
 		}
 
 		if len(debts) == 0 {
-			return h.sendWithKeyboard(chatID, "У вас нет долгов для удаления", h.debtsKeyboard())
+			h.sessionMgr.Delete(userID)
+			return h.sendWithKeyboard(chatID,
+				"🌟 YOUR DEBT FIELD IS CLEAR! NOTHING TO ANNIHILATE!",
+				h.debtsKeyboard())
 		}
 
 		newState := &State{
@@ -34,27 +38,28 @@ func (h *Handler) handleDeleteFlow(chatID, userID int, step string, data string)
 		h.sessionMgr.Set(userID, h.ID(), newState)
 
 		return h.sendWithKeyboard(chatID,
-			"Выберите долг для удаления:",
+			"💥 SELECT TARGET FOR TOTAL ANNIHILATION:",
 			h.debtsListKeyboard(debts, flowDelete))
 
 	case "select":
 		debtID, err := strconv.ParseInt(strings.TrimPrefix(data, "debt_delete_select_"), 10, 64)
 		if err != nil {
 			h.sessionMgr.Delete(userID)
-			return h.sendErrorMessage(chatID, "Неверный ID долга")
+			return h.sendErrorMessage(chatID, "INVALID TARGET IDENTIFIER! 🚨")
 		}
 
 		debt, err := h.storage.Get(h.ctx, debtID)
 		if err != nil {
-			h.logger.Errorf("Ошибка получения долга %d: %v", debtID, err)
-			return h.sendErrorMessage(chatID, "Ошибка получения долга")
+			h.logger.Errorf("failed to get debt %d: %v", debtID, err)
+			return h.sendErrorMessage(chatID, "TARGET LOCK FAILED! 🚨")
 		}
 
 		h.logger.Debugf("get temp debt:%+v", debt)
 
 		if debt.UserID != int64(userID) {
 			h.sessionMgr.Delete(userID)
-			return h.sendErrorMessage(chatID, "Это не ваш долг")
+			return h.sendErrorMessage(chatID, "💢 DRILL COLLISION DETECTED! THIS DEBT CORE BELONGS TO ANOTHER PILOT! "+
+				"YOUR DRILL CANNOT PIERCE ANOTHER MAN'S SOUL! ⚔️")
 		}
 
 		state := &State{
@@ -64,50 +69,46 @@ func (h *Handler) handleDeleteFlow(chatID, userID int, step string, data string)
 		}
 		h.sessionMgr.Set(userID, h.ID(), state)
 
-		// Форматируем дату с проверкой на nil
-		var dateStr string
-		if debt.ReturnDate != nil {
-			dateStr = debt.ReturnDate.Format("02.01.2006")
-		} else {
-			dateStr = "не указана"
-		}
-
-		confirmMsg := fmt.Sprintf(
-			"Вы действительно хотите удалить этот долг?\n\n"+
-				"🔹 Описание: %s\n"+
-				"🔹 Сумма: %d₽\n"+
-				"🔹 Дата возврата: %s\n\n"+
-				"⚠️ Это действие необратимо!",
-			debt.Description,
-			debt.Amount,
-			dateStr,
-		)
-
-		return h.sendWithKeyboard(chatID, confirmMsg, h.confirmDeleteKeyboard())
+		return h.sendWithKeyboard(chatID,
+			fmt.Sprintf("☠️ FINAL DRILLING SEQUENCE INITIATED!\n\n"+
+				"▫️ TARGET: %s\n"+
+				"▫️ DEBT LOAD: %s₽\n\n"+
+				"💢 ENGAGE TOTAL ANNIHILATION?",
+				debt.Description,
+				formatMoney(debt.Amount)),
+			h.confirmDeleteKeyboard())
 
 	case "confirm":
-		if data == string(cbDeleteConfirm) {
+		if data == cbDeleteConfirm {
 			state, ok := session.State.(*State)
 			if !ok || state.TempDebt == nil {
-				return h.sendErrorMessage(chatID, "Ошибка: данные сессии утеряны")
+				return h.sendErrorMessage(chatID, "DRILL SEQUENCE CORRUPTED! 🚨")
 			}
 
 			if err := h.storage.Delete(h.ctx, state.TempDebt.ID); err != nil {
-				h.logger.Errorf("Ошибка удаления долга %d: %v", state.TempDebt.ID, err)
+				h.logger.Errorf("failed to delete debt %d: %v", state.TempDebt.ID, err)
 				h.sessionMgr.Delete(userID)
-				return h.sendErrorMessage(chatID, "Ошибка удаления долга")
+				return h.sendErrorMessage(chatID, "COSMIC ERASURE FAILED! 🚨")
 			}
 
 			h.sessionMgr.Delete(userID)
-			return h.sendWithKeyboard(chatID, "✅ Долг успешно удален", h.debtsKeyboard())
-		} else if data == string(cbCancel) {
+			return h.sendWithKeyboard(chatID,
+				fmt.Sprintf("💀 TARGET DESTROYED!\n\n"+
+					"▫️ %s\n"+
+					"▫️ %s₽ DEBT LOAD ERASED FROM EXISTENCE!\n\n"+
+					"THE DRILL PIERCED EVEN OBLIVION!",
+					strings.ToUpper(state.TempDebt.Description),
+					formatMoney(state.TempDebt.Amount)),
+				h.debtsKeyboard())
+
+		} else if data == cbCancel {
 			h.sessionMgr.Delete(userID)
 			return h.sendWithKeyboard(chatID, "❌ Удаление отменено", h.debtsKeyboard())
 		}
 
 	default:
 		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("Неизвестный шаг в процессе удаления: %s", step))
+		return h.sendErrorMessage(chatID, fmt.Sprintf("🚨 UNKNOWN DRILL SEQUENCE: %s", step))
 	}
 
 	return nil

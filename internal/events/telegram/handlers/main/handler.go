@@ -14,9 +14,10 @@ const (
 
 	cmdMenu = "menu"
 
-	cbDebt    = "debt_menu"
-	cbWeather = "weather_menu"
-	cbTask    = "tasks_menu"
+	cbDebt     = "debt_menu"
+	cbWeather  = "weather_menu"
+	cbTask     = "tasks_menu"
+	cbMainMenu = "main_menu"
 )
 
 type Handler struct {
@@ -40,9 +41,9 @@ func (h *Handler) CanHandle(event events.Event) bool {
 }
 
 func (h *Handler) Handle(event events.Event) error {
-	meta, err := meta(event)
+	meta, err := telegram.ExtractMeta(event)
 	if err != nil {
-		return fmt.Errorf("get meta: %w", err)
+		return fmt.Errorf("failed to extract meta: %w", err)
 	}
 
 	action := strings.TrimPrefix(event.Text, prefix)
@@ -55,10 +56,33 @@ func (h *Handler) Handle(event events.Event) error {
 	}
 }
 
-func meta(event events.Event) (telegram.Meta, error) {
-	res, ok := event.Meta.(telegram.Meta)
-	if !ok {
-		return telegram.Meta{}, fmt.Errorf("failed to process meta: %w", telegram.ErrUnknownMetaType)
-	}
-	return res, nil
+func (h *Handler) mainKeyboard() tgClient.ReplyMarkup {
+	return tgClient.NewInlineKeyboard([][]tgClient.InlineKeyboardButton{
+		{
+			{Text: debtButton, CallbackData: cbDebt},
+		},
+		// [SPIRAL SYSTEMS CHARGING...]
+		//{
+		//    {Text: weatherButton, CallbackData: cbWeather},
+		//    {Text: taskButton, CallbackData: cbTask},
+		//},
+		{
+			{Text: MainConsoleButton, CallbackData: cbMainMenu},
+		},
+	})
 }
+
+const (
+	debtButton        = "💢 DEPLOY DEBT DRILL SYSTEM (v2.1) 💢"
+	weatherButton     = "🌪️ DEPLOY CLIMATE DRILL SYSTEM 🌪️"
+	taskButton        = "🎯 DEPLOY TASK DRILLER 9000 🎯"
+	MainConsoleButton = "🌀 SPIRAL COMMAND CENTER 🌀"
+	msgMenu           = `💥 SPIRAL COMMAND CENTER :: GIGA DRILL ONLINE 💥
+
+SELECT COMBAT PROTOCOL:
+• [DEBT DRILL SYSTEM v2.1] - Status: [OPERATIONAL]
+• [TASK DRILLER 9000] - Status: [STANDBY]
+• [CLIMATE DRILL SYSTEM] - Status: [STANDBY]
+
+AWAITING ORDERS, DRILL COMMANDER!`
+)

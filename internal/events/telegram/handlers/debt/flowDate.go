@@ -3,6 +3,7 @@ package debt
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -10,27 +11,37 @@ func (h *Handler) handleDateFlow(chatID, userID int, cmd, step, data string) err
 	switch step {
 	case "year", "start":
 		if data == "" {
-			return h.sendWithKeyboard(chatID, "выберете год", h.yearKeyboard())
+			return h.sendWithKeyboard(chatID,
+				"⏳ INITIATE TEMPORAL DRILL!\n"+
+					"SELECT DESTINATION YEAR:",
+				h.yearKeyboard())
 		}
 
 		return h.processYearSelection(chatID, userID, cmd, data)
 
 	case "month":
 		if data == "" {
-			return h.sendWithKeyboard(chatID, "выберете месяц", h.monthKeyboard())
+			return h.sendWithKeyboard(chatID,
+				"🌀 TEMPORAL COORDINATES PARTIAL!\n"+
+					"SELECT DESTINATION MONTH:",
+				h.monthKeyboard())
 		}
 
 		return h.processMonthSelection(chatID, userID, cmd, data)
 
 	case "day":
 		if data == "" {
-			return h.sendWithKeyboard(chatID, "выберете день", h.dateKeyboard())
+			return h.sendWithKeyboard(chatID,
+				"💢 FINAL TEMPORAL ADJUSTMENT!\n"+
+					"SELECT D-DAY FOR DEBT RECLAMATION:",
+				h.dateKeyboard())
 		}
 
 		return h.processDaySelection(chatID, userID, cmd, data)
 
 	default:
-		return h.sendErrorMessage(chatID, fmt.Sprintf("unknown step: %s"+step))
+		return h.sendErrorMessage(chatID,
+			"🚨 UNKNOWN TEMPORAL DRILL SEQUENCE: "+step)
 	}
 }
 
@@ -39,7 +50,8 @@ func (h *Handler) processYearSelection(chatID, userID int, flow, year string) er
 	yearInt, err := strconv.ParseInt(year, 10, 32)
 	if err != nil {
 		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid year: %v", err))
+		return h.sendErrorMessage(chatID, "TEMPORAL ANOMALY DETECTED!\n"+
+			"INVALID YEAR FORMAT! TRY AGAIN! 🚨")
 	}
 
 	now := time.Now()
@@ -63,14 +75,13 @@ func (h *Handler) processYearSelection(chatID, userID int, flow, year string) er
 			h.sessionMgr.Set(userID, h.ID(), s)
 
 			return h.sendWithKeyboard(chatID,
-				fmt.Sprintf("Выберите месяц для %s года:", year),
+				fmt.Sprintf("🌀 YEAR %s LOCKED!\n"+
+					"NOW SELECT DESTINATION MONTH:", year),
 				h.monthKeyboard())
 		}
-		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
 	}
 	h.sessionMgr.Delete(userID)
-	return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
+	return h.sendErrorMessage(chatID, "🚨 TEMPORAL DRILL FAILURE! SESSION LOST!")
 }
 
 func (h *Handler) processMonthSelection(chatID, userID int, flow, month string) error {
@@ -78,7 +89,9 @@ func (h *Handler) processMonthSelection(chatID, userID int, flow, month string) 
 	monthInt, err := strconv.ParseInt(month, 10, 32)
 	if err != nil {
 		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid month: %v", err))
+		return h.sendErrorMessage(chatID,
+			"💥 TEMPORAL ANOMALY DETECTED!\n"+
+				"INVALID MONTH FORMAT! TRY AGAIN!")
 	}
 
 	if session, exists := h.sessionMgr.Get(userID); exists {
@@ -104,22 +117,27 @@ func (h *Handler) processMonthSelection(chatID, userID int, flow, month string) 
 			h.sessionMgr.Set(userID, h.ID(), s)
 
 			return h.sendWithKeyboard(chatID,
-				fmt.Sprintf("Выберите день для %d года и %d месяца", old.Year(), newDate.Month()),
+				fmt.Sprintf("💢 MONTH %s ENGAGED!\n"+
+					"NOW SET FINAL D-DAY COORDINATES:",
+					time.Month(monthInt).String()),
 				h.dayKeyboard(int(monthInt)))
 		}
-		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
 	}
+
 	h.sessionMgr.Delete(userID)
-	return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
+	return h.sendErrorMessage(chatID, "TEMPORAL DRILL FAILURE! SESSION LOST! 🚨")
 }
 
 func (h *Handler) processDaySelection(chatID, userID int, flow, day string) error {
 	h.logger.Debugf("processing day selection: %s, for userId:%d", day, userID)
+
 	dayInt, err := strconv.ParseInt(day, 10, 32)
 	if err != nil {
 		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid day: %v", err))
+
+		return h.sendErrorMessage(chatID,
+			"TEMPORAL ANOMALY DETECTED!\n"+
+				"INVALID DAY FORMAT! TRY AGAIN! 🚨")
 	}
 
 	if session, exists := h.sessionMgr.Get(userID); exists {
@@ -144,45 +162,57 @@ func (h *Handler) processDaySelection(chatID, userID int, flow, day string) erro
 
 			return h.finishDateFlow(chatID, userID, s.FlowType)
 		}
-		h.sessionMgr.Delete(userID)
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
 	}
+
 	h.sessionMgr.Delete(userID)
-	return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
+	return h.sendErrorMessage(chatID, "🚨 TEMPORAL DRILL FAILURE! SESSION LOST!")
 }
 
 func (h *Handler) finishDateFlow(chatID, userID int, flowType string) error {
-	var err error
-	var msg string
-
 	if session, exists := h.sessionMgr.Get(userID); exists {
 		if s, ok := session.State.(*State); ok {
 
 			switch flowType {
 			case flowAdd:
-				_, err = h.storage.Save(h.ctx, s.TempDebt)
-				msg = "✅ Долг успешно добавлен"
+				_, err := h.storage.Save(h.ctx, s.TempDebt)
+				if err != nil {
+					h.logger.Debugf("failed to save debt: %v", err)
+
+					h.sessionMgr.Delete(userID)
+					return h.sendErrorMessage(chatID,
+						"💥 COSMIC DEBT REGISTRY REJECTED OUR DRILL!")
+				}
+
+				h.sessionMgr.Delete(userID)
+
+				return h.sendWithKeyboard(chatID,
+					fmt.Sprintf("⚡ DEBT DRILL LAUNCH SUCCESS!\n\n"+
+						"▫️ TARGET LOCKED: %s\n"+
+						"▫️ SPIRAL ENERGY: %s\n"+
+						"▫️ TERMINATION DATE: %s\n\n"+
+						"💢 THIS MISSION HAS BEEN CARVED INTO THE BATTLE LOG!",
+						strings.ToUpper(s.TempDebt.Description),
+						formatMoney(s.TempDebt.Amount),
+						s.TempDebt.ReturnDate.Format("02.01.2006")),
+					h.debtsKeyboard())
+
 			case flowEdit:
 				s.Step = "choice"
 				h.sessionMgr.Set(userID, h.ID(), s)
-				return h.sendWithKeyboard(chatID, "дата обновлена. Что редактируем дальше?", h.editOptionsKeyboard())
+
+				return h.sendWithKeyboard(chatID,
+					"🌀 TEMPORAL COORDINATES UPDATED!\n"+
+						"SELECT NEXT REALITY FRAGMENT TO MODIFY:",
+					h.editOptionsKeyboard())
+
 			default:
 				h.sessionMgr.Delete(userID)
-				return h.sendErrorMessage(chatID, "Неизвестный тип операции")
+
+				return h.sendErrorMessage(chatID,
+					"🚨 UNKNOWN TEMPORAL OPERATION TYPE!")
 			}
-
-			h.sessionMgr.Delete(userID)
-
-			if err != nil {
-				h.logger.Errorf("Ошибка сохранения долга: %v", err)
-				return h.sendErrorMessage(chatID, "Ошибка сохранения")
-			}
-
-			return h.sendWithKeyboard(chatID, msg, h.debtsKeyboard())
 		}
-
-		return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
 	}
-	h.sessionMgr.Delete(userID)
-	return h.sendErrorMessage(chatID, fmt.Sprintf("invalid step, session not found: %v", err))
+
+	return h.sendErrorMessage(chatID, "🚨 TEMPORAL DRILL FAILURE! SESSION LOST!")
 }
