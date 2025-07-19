@@ -72,8 +72,9 @@ const (
 
 type State struct {
 	FlowType string
-	TempDebt *model.Debt
 	Step     string
+	StepData string
+	TempDebt *model.Debt
 }
 
 type Handler struct {

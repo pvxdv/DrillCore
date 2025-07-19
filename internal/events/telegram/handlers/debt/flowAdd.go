@@ -20,7 +20,7 @@ func (h *Handler) handleAddFlow(chatID, userID int, step string, data string) er
 
 		return h.sendWithKeyboard(chatID,
 			"🌀 INITIATE DEBT DRILL DEPLOYMENT SEQUENCE!\n"+
-				"ENTER TARGET DESIGNATION FOR NEW SPIRAL DEBT:",
+				"ENTER DESCRIPTION:\n",
 			h.cancelKeyboard())
 	}
 
@@ -46,7 +46,7 @@ func (h *Handler) handleAddFlow(chatID, userID int, step string, data string) er
 
 		return h.sendWithKeyboard(chatID,
 			"⚡ TARGET ACQUIRED! NOW INPUT SPIRAL DEBT LOAD:\n"+
-				"HOW MANY DRILL UNITS DOES THIS DEBT REQUIRE?",
+				"INPUT AMOUNT",
 			h.cancelKeyboard())
 
 	case stepAmount:

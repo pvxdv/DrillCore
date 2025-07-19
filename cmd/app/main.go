@@ -8,8 +8,8 @@ import (
 	"drillCore/internal/events/telegram"
 	"drillCore/internal/events/telegram/handlers/command"
 	"drillCore/internal/events/telegram/handlers/debt"
-	mainmenu "drillCore/internal/events/telegram/handlers/main"
-	"drillCore/internal/session/session.go"
+	mainmenu "drillCore/internal/events/telegram/handlers/main-menu"
+	"drillCore/internal/session"
 	"drillCore/internal/storage/debt/postgres"
 	"fmt"
 	"go.uber.org/zap"
@@ -41,7 +41,7 @@ func main() {
 	storage, err := postgres.New(ctx, cfg.DbEnvs, logger)
 
 	tg := tgClient.New(cfg.TelegramEnvs, logger)
-	sm := session_go.NewSessionManager()
+	sm := session.New()
 
 	debtH := debt.New(ctx, tg, sm, storage, logger)
 	cmdH := command.New(tg, logger)

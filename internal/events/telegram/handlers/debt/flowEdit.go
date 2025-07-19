@@ -84,7 +84,7 @@ func (h *Handler) handleEditFlow(chatID, userID int, step string, data string) e
 
 			return h.sendWithKeyboard(chatID,
 				"💢 INITIATE DESCRIPTION DRILLING SEQUENCE!\n"+
-					"INPUT NEW TARGET DESIGNATION FOR DEEP CORE:",
+					"INPUT NEW DESCRIPTION",
 				h.cancelKeyboard())
 		}
 
@@ -116,7 +116,7 @@ func (h *Handler) handleEditFlow(chatID, userID int, step string, data string) e
 
 			return h.sendWithKeyboard(chatID,
 				"💥 INITIATE QUANTUM DRILLING!\n"+
-					"INPUT NEW SPIRAL POWER OUTPUT (MIN 1 DRILL UNIT):",
+					"INPUT NEW AMOUNT:\n",
 				h.cancelKeyboard())
 		}
 

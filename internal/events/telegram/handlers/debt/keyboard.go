@@ -2,7 +2,7 @@ package debt
 
 import (
 	tgClient "drillCore/internal/clients/telergam"
-	mainmenu "drillCore/internal/events/telegram/handlers/main"
+	mainmenu "drillCore/internal/events/telegram/handlers/main-menu"
 	"drillCore/internal/model"
 	"fmt"
 	"sort"
@@ -11,26 +11,25 @@ import (
 )
 
 const (
-	addDebtButton    = "💢 DEPLOY DEBT DRILL"
-	editDebtButton   = "🌀 REALITY EDITING DRILL"
-	payDebtButton    = "💥 CREDIT CANNON BLAST"
-	deleteDebtButton = "☠️ ANNIHILATE"
-	listDebtButton   = "📜 BATTLE LOG"
+	addDebtButton    = "💢 NEW DRILL"
+	editDebtButton   = "🌀 EDIT DRILL"
+	payDebtButton    = "💥 PAY DRILL"
+	deleteDebtButton = "☠️ KILL DRILL"
+	listDebtButton   = "📜 DRILL LOG"
 
 	confirmButton = "💢 COMMIT DRILL"
 	cancelButton  = "🌀 SPIRAL BACK"
 
-	editDescButton   = "🌀 DRILL-EDIT: DESC"
-	editAmountButton = "💢 DRILL-EDIT: CASH"
-	editDateButton   = "⏳ DRILL-EDIT: TIME"
+	editDescButton   = "🌀 DESC"
+	editAmountButton = "💢 CASH"
+	editDateButton   = "⏳ TIME"
 	finishEditButton = "🌀 FINALIZE DRILLING"
 
 	selectDateButton = "⏳ SET D-DAY"
 	yearButtonFormat = "📅 %d"
 
-	deleteConfirmButton = "💀 ENGAGE ANNIHILATION"
-	ignoreButton        = " "
-	backButton          = "💢 SPIRAL COMMAND CENTER 💢"
+	ignoreButton = " "
+	backButton   = "💢 SPIRAL COMMAND CENTER 💢"
 )
 
 func (h *Handler) debtsKeyboard() tgClient.ReplyMarkup {
@@ -287,7 +286,7 @@ func (h *Handler) editOptionsKeyboard() tgClient.ReplyMarkup {
 func (h *Handler) confirmDeleteKeyboard() tgClient.ReplyMarkup {
 	return tgClient.NewInlineKeyboard([][]tgClient.InlineKeyboardButton{
 		{
-			{Text: deleteConfirmButton, CallbackData: cbDeleteConfirm},
+			{Text: confirmButton, CallbackData: cbDeleteConfirm},
 			{Text: cancelButton, CallbackData: cbCancel},
 		},
 	})
