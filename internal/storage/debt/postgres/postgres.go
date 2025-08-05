@@ -60,7 +60,7 @@ func (s *DebtStorage) Save(ctx context.Context, debt *model.Debt) (int64, error)
 	return debtID, nil
 }
 
-func (s *DebtStorage) Get(ctx context.Context, id int64) (*model.Debt, error) {
+func (s *DebtStorage) Debt(ctx context.Context, id int64) (*model.Debt, error) {
 	q := `SELECT id, user_id, description, amount, return_date FROM debt WHERE id = $1`
 
 	var d model.Debt

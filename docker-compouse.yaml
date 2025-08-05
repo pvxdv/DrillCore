@@ -16,7 +16,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
-      #telegram
+      #event-processor
       - TG_TOKEN=${T_TOKEN}
       - TG_BASE_URL=${T_BASE_URL}
       - TG_BATCH_SIZE=${T_BATCH}

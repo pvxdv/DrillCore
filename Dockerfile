@@ -12,13 +12,16 @@ WORKDIR /go
 ENV CGO_ENABLED=0
 RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
-FROM gcr.io/distroless/static-debian12
-#FROM alpine
+#FROM gcr.io/distroless/static-debian12
+FROM alpine
 WORKDIR /app
 
 COPY --from=builder /app/server .
+COPY --from=builder /src/resources ./resources
 
 COPY --from=goose-builder /go/bin/goose /usr/local/bin/goose
 COPY migrations /app/migrations
+
+RUN ls -la ./resources/static/
 
 CMD ["/app/server"]

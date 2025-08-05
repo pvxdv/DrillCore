@@ -1,4 +1,4 @@
-package tgClient
+package bot
 
 func NewInlineKeyboard(buttons [][]InlineKeyboardButton) ReplyMarkup {
 	return ReplyMarkup{

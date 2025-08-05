@@ -1,11 +1,13 @@
 package events
 
+import "context"
+
 type Fetcher interface {
-	Fetch(limit int) ([]Event, error)
+	Fetch(ctx context.Context, limit int) ([]*Event, error)
 }
 
 type Processor interface {
-	Process(e Event) error
+	Process(ctx context.Context, e *Event) error
 }
 
 type Type int
@@ -19,5 +21,10 @@ const (
 type Event struct {
 	Type Type
 	Text string
-	Meta interface{}
+	Meta *Meta
+}
+
+type Meta struct {
+	ChatID int
+	UserID int
 }

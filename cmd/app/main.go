@@ -2,22 +2,26 @@ package main
 
 import (
 	"context"
-	tgClient "drillCore/internal/clients/telergam"
-	"drillCore/internal/config"
-	eventconsummer "drillCore/internal/event-consummer"
-	"drillCore/internal/events/telegram"
-	"drillCore/internal/events/telegram/handlers/command"
-	"drillCore/internal/events/telegram/handlers/debt"
-	mainmenu "drillCore/internal/events/telegram/handlers/main-menu"
-	"drillCore/internal/session"
-	"drillCore/internal/storage/debt/postgres"
 	"fmt"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"drillCore/internal/bot"
+	"drillCore/internal/config"
+	"drillCore/internal/events/event-consummer"
+	"drillCore/internal/events/event-processor"
+	"drillCore/internal/events/event-processor/manager"
+	"drillCore/internal/events/event-processor/manager/command"
+	"drillCore/internal/events/event-processor/manager/date"
+	"drillCore/internal/events/event-processor/manager/debt"
+	mainmenu "drillCore/internal/events/event-processor/manager/main-menu"
+	"drillCore/internal/session"
+	"drillCore/internal/storage/debt/postgres"
+
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func main() {
@@ -40,26 +44,23 @@ func main() {
 
 	storage, err := postgres.New(ctx, cfg.DbEnvs, logger)
 
-	tg := tgClient.New(cfg.TelegramEnvs, logger)
-	sm := session.New()
+	tg := bot.New(cfg.TelegramEnvs, logger)
 
-	debtH := debt.New(ctx, tg, sm, storage, logger)
-	cmdH := command.New(tg, logger)
-	menuH := mainmenu.New(tg, logger)
+	sMng := session.New()
 
-	eventsProcessor := telegram.New(
-		tg,
-		sm,
-		logger,
-		debtH,
-		cmdH,
-		menuH,
-	)
+	debtH := debt.New(tg, sMng, storage, logger)
+	cmdH := command.New(tg, sMng, logger)
+	menuH := mainmenu.New(tg, sMng, logger)
+	dateH := date.New(tg, sMng, logger)
 
-	logger.Info("Starting telegram bot")
+	hMng := manager.New(tg, sMng, logger, cmdH, menuH, debtH, dateH)
 
-	consumer := eventconsummer.New(eventsProcessor, eventsProcessor, cfg.TelegramEnvs.BatchSize)
-	if err := consumer.Start(); err != nil {
+	eventsProcessor := eventprocessor.New(tg, hMng, logger)
+
+	logger.Info("Starting event-processor bot")
+
+	consumer := eventconsummer.New(eventsProcessor, eventsProcessor, cfg.TelegramEnvs.BatchSize, logger)
+	if err := consumer.Start(ctx); err != nil {
 		logger.Fatalf("service stopped:%v", err)
 	}
 
