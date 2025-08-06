@@ -2,52 +2,98 @@ package manager
 
 // COMMAND HANDLER
 const (
-	MsgCMDStart = "🌀 SPIRAL CORE — READY\n\n" +
-		"🌀 STATUS: 🔋 ACTIVE\n\n" +
-		"🌀 TARGET: YOUR LIMITS\n\n" +
-		"🌀 DEPLOYED:\n" +
-		"  💢 DEBT DRILL — ONLINE\n\n" +
-		"🌀 SOON:\n" +
-		"  🍳 KITCHEN DRILL\n" +
-		"  💪 GYM DRILL\n" +
-		"  📅 TASK DRILL\n\n" +
-		"🌀 HEAR IT?\n" +
-		"🌀 THE DRILL IS TURNING...\n\n"
+	MsgCMDStart = SpiralDelimiter +
+		"🌀 SPIRAL CORE — BOOT SEQUENCE INITIATED\n\n" +
+		"⚡ SYSTEM STATUS: 🔋 ONLINE\n\n" +
+		"🎯 PRIMARY TARGET: YOUR LIMITS\n\n" +
+		"🚀 ACTIVE MODULES:\n" +
+		"  " + DebtModuleButton + "\n\n" +
+		"⏳ IN DEVELOPMENT:\n" +
+		"  " + RecipeModuleButton + "\n\n" +
+		"  " + GymModuleButton + "\n\n" +
+		"  " + TasksModuleButton + "\n\n" +
+		"🔊 HEAR IT?\n" +
+		"🌀 THE DRILL IS TURNING...\n\n" +
+		SpiralDelimiter +
+		"🔥 IF YOU BELIEVE YOU CAN — YOU CAN!\n" +
+		"💥 BUT IF YOU DON'T BELIEVE —\n" +
+		"   THEN JUST START DRILLING\n" +
+		"   UNTIL YOU BREAK THROUGH!!!\n" +
+		SpiralDelimiter
 
-	MsgCMDHelp = "💢 SPIRAL COMMAND TRANSMISSION RECEIVED 💢\n\n" +
-		"🌀 /start — ACTIVATE MAIN DRILL\n" +
+	MsgCMDHelp = SpiralDelimiter +
+		"🌀 SPIRAL COMMAND TRANSMISSION RECEIVED\n\n" +
 		"📡 /help — DISPLAY COMBAT MANUAL\n" +
-		"📝 /debt — DEBT DRILL PROTOCOL MANUAL\n" +
-		"🍳 /recipe — KITCHEN DRILL PROTOCOL (SOON)\n" +
-		"💪 /gym — HYPERTROPHY DRILL PROTOCOL (SOON)\n" +
-		"📅 /task — TASK DRILL PROTOCOL (SOON)\n\n" +
-		"THE POWER TO CHANGE YOUR LIFE\n" +
+		"🌀 /start — INITIATE SPIRAL CORE\n\n" +
+		"💥 ACTIVE DRILL HUBS:\n" +
+		"  " + DebtModuleButton + "\n\n" +
+		SpiralDelimiter +
+		"⏳ IN DEVELOPMENT:\n" +
+		"  " + RecipeModuleButton + "\n\n" +
+		"  " + GymModuleButton + "\n\n" +
+		"  " + TasksModuleButton + "\n\n" +
+		"⚠️ WARNING: IN DEVELOPMENT MODULES ARE LOCKED.\n" +
+		"💥 THE POWER TO CHANGE YOUR LIFE\n" +
 		"IS THE POWER TO DRILL!\n\n" +
-		"💢 WHO THE HELL DO YOU THINK YOU ARE?!"
+		"💢 WHO THE HELL DO YOU THINK YOU ARE?!\n" +
+		SpiralDelimiter
 
-	MsgCMDDebt = "🌀 DEBT DRILL PROTOCOL - OPERATIONAL 🌀\n\n" +
-		"💥 THIS MODULE ALLOWS YOU TO:\n\n" +
-		"• 📝 CREATE SPIRAL CONTRACTS (DEBTS)\n" +
-		"• 💸 TRACK SPIRAL POWER (AMOUNT OWED)\n" +
-		"• ⏳ SET D-DAY (RETURN DEADLINE)\n" +
-		"• 💢 PAY IN PARTS — EACH PAYMENT IS A SPIRAL STRIKE!\n" +
-		"• ☠️ ERASE CONTRACTS FROM EXISTENCE\n" +
-		"• 📊 VIEW ALL CONTRACTS IN DRILL LOG\n\n" +
+	MsgCMDDebt = SpiralDelimiter +
+		"🌀 DEBT DRILL HUB — FULL MANUAL 🌀\n\n" +
+		"💥 THIS MODULE TRANSFORMS YOUR DEBTS INTO SPIRAL CONTRACTS —\n" +
+		"TARGETS FOR YOUR DRILL TO PIERCE THROUGH.\n\n" +
+		"🔧 CORE PROTOCOLS:\n\n" +
+		"• " + AddDebtButton + " — Forge a new binding agreement with the future\n" +
+		"• " + EditDebtButton + " — Modify the terms of an existing contract\n" +
+		"• " + PayDebtButton + " — Balance the spiral by returning energy\n" +
+		"• " + DeleteDebtButton + " — Annihilate a contract from existence\n" +
+		"• " + ListDebtButton + " — Review the history of all active missions\n\n" +
+		SpiralDelimiter +
+		"⏳ TEMPORAL DRILLING PROTOCOL:\n" +
+		"PAST DATES ARE SEALED. ONLY FUTURE DRILLING PERMITTED.\n\n" +
+		"• " + SelectDateButton + " — Set temporal coordinates for contract completion\n" +
+		"• " + ReInputYearButton + " — Re-drill the year\n" +
+		"• " + ReInputMonthButton + " — Re-drill the month\n" +
+		"• " + ReInputDayButton + " — Re-drill the day\n" +
+		"• " + RedirectDateButton + " — Lock temporal drill and return to parent protocol\n\n" +
+		SpiralDelimiter +
+		"⚙️ EDIT CONTRACT PROTOCOL:\n\n" +
+		"• " + EditDescButton + " — Edit the contract name\n" +
+		"• " + EditAmountButton + " — Adjust the spiral power\n" +
+		"• " + EditDateButton + " — Reset temporal coordinates\n" +
+		"• " + ConfirmEditButton + " — Deploy updated contract\n\n" +
+		SpiralDelimiter +
+		"🛡️ UNIVERSAL CONTROL PANEL:\n" +
+		"Available in all drill sequences:\n\n" +
+		"• " + ConfirmButton + " — Confirm and proceed\n" +
+		"• " + BackStepButton + " — Retreat to previous step\n" +
+		"• " + CancelButton + " — Abort current drill sequence\n" +
+		"• " + MainMenuButton + " — Return to Debt Drill Hub\n\n" +
+		SpiralDelimiter +
+		"🌀 HOW TO DEPLOY:\n" +
+		"1. Enter /start — Activate Spiral Core\n" +
+		"2. Press '" + MainMenuButtonGeneral + "' — Enter Command Center\n" +
+		"3. Select '" + DebtModuleButton + "' — Activate Debt Drill Hub\n" +
+		"4. Initiate your first Spiral Contract\n\n" +
 		"💥 YOUR DEBTS ARE NOT LIMITS —\n" +
 		"THEY ARE TARGETS FOR YOUR DRILL TO PIERCE!\n\n" +
-		"🌀 DEPLOY MODULE FROM MAIN MENU TO BEGIN."
+		"🌀 THE SPIRAL NEVER RETREATS — IT ASCENDS.\n" +
+		SpiralDelimiter
 
-	MsgCMDRecipe = "🍲 KITCHEN DRILL PROTOCOL - STANDBY 🍲\n\n" +
-		"⚡ THIS MODULE WILL ALLOW YOU TO:\n\n" +
+	MsgCMDRecipe = SpiralDelimiter +
+		"🍲 KITCHEN DRILL PROTOCOL - STANDBY 🍲\n\n" +
+		"💥 THIS MODULE WILL ALLOW YOU TO:\n\n" +
 		"• 🍅 PLAN MEALS & RECIPES\n" +
 		"• 🛒 CALCULATE GROCERY LIST\n" +
 		"• 🔬 TRACK BZHU (MACROS)\n" +
 		"• 🔥 OPTIMIZE CALORIC INTAKE\n\n" +
 		"💥 YOUR KITCHEN IS NOT A PANTRY —\n" +
 		"IT'S A BATTLEFIELD FOR NUTRITIONAL SUPERIORITY!\n\n" +
-		"🚀 COMING SOON — PREPARE FOR LAUNCH!"
+		"🚀 COMING SOON — PREPARE FOR LAUNCH!\n" +
+		SpiralDelimiter
 
-	MsgCMDGym = "🏋️ HYPERTROPHY DRILL PROTOCOL - STANDBY 🏋️\n\n" +
+	MsgCMDGym = SpiralDelimiter +
+		"🏋️ HYPERTROPHY DRILL PROTOCOL - STANDBY 🏋️\n\n" +
 		"💥 THIS MODULE WILL ALLOW YOU TO:\n\n" +
 		"• 💪 LOG WORKOUTS & EXERCISES\n" +
 		"• 🔁 TRACK SETS, REPS, WEIGHT\n" +
@@ -55,90 +101,48 @@ const (
 		"• 🚨 DETECT STAGNATION PATTERNS\n\n" +
 		"💥 YOUR GYM IS NOT A ROOM —\n" +
 		"IT'S A LABORATORY FOR MUSCLE SPIRALIZATION!\n\n" +
-		"🚀 COMING SOON — PREPARE FOR GROWTH OVERDRIVE!"
+		"🚀 COMING SOON — PREPARE FOR GROWTH OVERDRIVE!\n" +
+		SpiralDelimiter
 
-	MsgCMDTask = "📅 TASK DRILL PROTOCOL - STANDBY 📅\n\n" +
-		"⚡ THIS MODULE WILL ALLOW YOU TO:\n\n" +
+	MsgCMDTask = SpiralDelimiter +
+		"📅 TASK DRILL PROTOCOL - STANDBY 📅\n\n" +
+		"💥 THIS MODULE WILL ALLOW YOU TO:\n\n" +
 		"• 🎯 CREATE & MANAGE TASKS\n" +
 		"• ⏳ SET DEADLINES & REMINDERS\n" +
 		"• 🚀 PRIORITIZE MISSIONS\n" +
 		"• ☠️ ANNIHILATE PROCRASTINATION\n\n" +
 		"💥 YOUR TO-DO LIST IS NOT A CHORE —\n" +
 		"IT'S A SPIRAL TARGET FOR PIERCING!\n\n" +
-		"🚀 COMING SOON — PREPARE FOR LIMIT-BREAK!"
+		"🚀 COMING SOON — PREPARE FOR LIMIT-BREAK!\n" +
+		SpiralDelimiter
 
 	MainMenuButtonGeneral = "🌀 DEPLOY COMMAND CENTER 🌀"
 
-	InvalidCommand = "🚨 COMMAND REJECTED BY SPIRAL CORE! 💢\n\n" +
-		"🌀 THIS DRILL ONLY RESPONDS TO PROPER ORDERS!\n" +
-		"⚡ CHECK YOUR INPUT AND ATTACK AGAIN!\n\n" +
-		"💢 YOUR KEYBOARD IS NOT THE DRILL THAT PIERCES THE HEAVENS!"
+	InvalidCommand = SpiralDelimiter +
+		"🚨 COMMAND REJECTED BY SPIRAL CORE! 💢\n\n" +
+		"💥 SPIRAL CORE ONLY RESPONDS TO PROPER ORDERS!\n" +
+		"⚠️ CHECK YOUR INPUT\n\n" +
+		"🌀 RETURNING TO SPIRAL CORE...\n" +
+		SpiralDelimiter
 )
 
 // MAIN MENU
 const (
 	MsgMainMenu = SpiralDelimiter +
-		"🌀 SPIRAL CORE IS ONLINE. THE DRILL IS TURNING.\n\n" +
+		"🌀 SPIRAL CORE — ONLINE\n\n" +
 		"⚡ YOUR LIMITS HAVE BEEN TARGETED AND LOCKED.\n\n" +
-		"🌀 DRILL COMMANDER, THE BATTLE BEGINS\n" +
-		"DEPLOY YOUR FIRST PROTOCOL NOW:\n\n" +
+		"🌀 DRILL COMMANDER, THE BATTLE BEGINS.\n" +
+		"DEPLOY TARGET HUB:\n" +
 		SpiralDelimiter
 
-	DebtModuleButton   = "💢 DEBT DRILL — LIVE"
-	RecipeModuleButton = "🍳 KITCHEN DRILL — BOOT"
-	GymModuleButton    = "💪 GYM DRILL — BOOT"
-	TasksModuleButton  = "📅 TASK DRILL — BOOT"
+	DebtModuleButton   = "🌀 DEBT DRILL HUB 🌀"
+	RecipeModuleButton = "💢 KITCHEN DRILL HUB 💢"
+	GymModuleButton    = "💢 GYM DRILL HUB 💢"
+	TasksModuleButton  = "💢 TASK DRILL HUB 💢"
 )
 
 // GENERAL
 const (
-	FailedToCreateKeyboard = "💢 DRILL CONTROL PANEL CRASHED! 💢\n\n" +
-		"🚨 FAILED TO BUILD BUTTON MATRIX\n" +
-		"🌀 INITIALIZING EMERGENCY PROTOCOLS..."
-
-	ButtonOnlyMode = "🚨 DRILL COMMAND SYSTEM LOCKED! 🚨\n\n" +
-		"💢 YOUR WORDS ARE WEAKER THAN A BANK'S PROMISES!\n" +
-		"🌀 THIS IS BUTTON-ONLY COMBAT MODE!\n" +
-		"⚡ REAL SPIRAL WARRIORS USE THE DRILL INTERFACE!\n\n" +
-		"💢 ENGAGE TACTICAL COMMAND BUTTONS BELOW!\n" +
-		"⚔️ YOUR KEYBOARD IS NOT THE DRILL THAT WILL PIERCE THE HEAVENS!"
-
-	InvalidStep = "💥 ABNORMAL DRILLING SEQUENCE DETECTED! 💥\n\n" +
-		"🌀 UNKNOWN STEP: %v\n" +
-		"🚨 SPIRAL MATRIX COMPROMISED!\n" +
-		"⚡ REALIGNING TEMPORAL DRILL PATH..."
-
-	InvalidEventType = "💥 UNIDENTIFIED EVENT SIGNAL! 🚨\n\n" +
-		"⚡ THIS DRILL DOESN'T RECOGNIZE THIS THREAT\n" +
-		"💢 DEPLOY STANDARD PROTOCOLS ONLY!\n" +
-		"🌀 ABORTING NON-COMPLIANT INPUT!"
-
-	SessionLost = "💥 SPIRAL CONNECTION LOST! 🚨\n\n" +
-		"🌀 YOUR DRILL SESSION VANISHED INTO THE VOID\n" +
-		"⚡ REALITY SHIFT DETECTED\n" +
-		"💢 RESTART YOUR MISSION FROM THE BEGINNING!"
-
-	FailedToGetCallBack = "⚡ CALLBACK SIGNAL LOST IN VOID! 💥\n\n" +
-		"🌀 BUTTON RESPONSE FAILED TO RETURN\n" +
-		"🚨 THE DRILL IS CONFUSED — COMMUNICATION LOST!"
-
-	FailedToGetState = "💥 SPIRAL STATE CORRUPTION! 🚨\n\n" +
-		"🌀 FAILED TO LOAD DRILL STATUS\n" +
-		"⚡ SESSION DATA DAMAGED OR LOST\n" +
-		"🌀 REBOOTING COMBAT SYSTEMS...\n" +
-		"⚡ REINITIALIZING SPIRAL CORE!"
-
-	MsgFailedToSetSession = "⚡ DRILL MEMORY CRASH! 💥\n\n" +
-		"🌀 FAILED TO SAVE SESSION STATE\n" +
-		"🚨 SPIRAL ENERGY DISSIPATING\n" +
-		"🌀 REBOOT AND RELOAD TO CONTINUE!"
-
-	HandlerNotFound = "🚨 DRILL PROTOCOL NOT FOUND! 💢\n\n" +
-		"🌀 NO MATCHING HANDLER FOR EVENT\n" +
-		"⚡ TYPE: %s\n" +
-		"💥 FALLING BACK TO SAFE MODE\n" +
-		"🌀 PREPARING DEFAULT DRILL SEQUENCE..."
-
 	SpiralFormat    = "🌀 %v"
 	RageEmoji       = "💢"
 	SpiralEmoji     = "🌀"
@@ -149,196 +153,274 @@ const (
 	ConfirmButton  = "🌀↵ LOCK DRILL"
 	BackStepButton = "🌀↺ BACK DRILLING"
 	MainMenuButton = "🌀 SPIRAL COMMAND CENTER 🌀"
+
+	FailedToCreateKeyboard = SpiralDelimiter +
+		"🚨 SPIRAL CONTROL PANEL CRASHED!\n\n" +
+		"💥 FAILED TO BUILD BUTTON MATRIX\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	ButtonOnlyMode = SpiralDelimiter +
+		"🚨 DRILL COMMAND SYSTEM LOCKED!\n\n" +
+		"💥 THIS IS BUTTON-ONLY COMBAT MODE!\n" +
+		"⚠️ REAL SPIRAL WARRIORS USE THE DRILL INTERFACE!\n\n" +
+		"🌀 ENGAGE TACTICAL COMMAND BUTTONS BELOW!\n" +
+		SpiralDelimiter
+
+	InvalidStep = SpiralDelimiter +
+		"🚨 ABNORMAL DRILLING SEQUENCE DETECTED!\n\n" +
+		"💥 UNKNOWN STEP: %v\n" +
+		"⚠️ SPIRAL MATRIX COMPROMISED!\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	InvalidEventType = SpiralDelimiter +
+		"🚨 UNIDENTIFIED EVENT SIGNAL!\n\n" +
+		"💥 THIS DRILL DOESN'T RECOGNIZE THIS THREAT\n" +
+		"⚠️ DEPLOY STANDARD PROTOCOLS ONLY!\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	SessionLost = SpiralDelimiter +
+		"🚨 SPIRAL CONNECTION LOST!\n\n" +
+		"💥 YOUR DRILL SESSION VANISHED INTO THE VOID\n" +
+		"⚠️ REALITY SHIFT DETECTED\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	FailedToGetCallBack = SpiralDelimiter +
+		"🚨 CALLBACK SIGNAL LOST IN VOID!\n\n" +
+		"💥 BUTTON RESPONSE FAILED TO RETURN\n" +
+		"⚠️ THE DRILL IS CONFUSED — COMMUNICATION LOST!\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	FailedToGetState = SpiralDelimiter +
+		"🚨 SPIRAL CONNECTION LOST!\n\n" +
+		"💥 FAILED TO LOAD DRILL SESSION\n" +
+		"⚠️ SESSION DATA DAMAGED OR LOST\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	MsgFailedToSetSession = SpiralDelimiter +
+		"🚨 SPIRAL CONNECTION LOST!\n\n" +
+		"💥 FAILED TO SAVE DRILL SESSION\n" +
+		"⚠️ SPIRAL ENERGY DISSIPATING\n\n" +
+		"🌀 RETURNING TO SAFE MODE...\n" +
+		SpiralDelimiter
+
+	HandlerNotFound = SpiralDelimiter +
+		"🚨 DRILL PROTOCOL NOT FOUND!\n\n" +
+		"💥 NO MATCHING HANDLER FOR EVENT\n" +
+		"⚠️ TYPE: %s\n\n" +
+		"🌀 PREPARING DEFAULT DRILL SEQUENCE...\n" +
+		SpiralDelimiter
 )
 
 // DEBT HANDLER
 const (
-	AddDebtButton    = "💢 NEW"
-	EditDebtButton   = "🌀 EDIT DRILL"
-	PayDebtButton    = "💥 PAY DRILL"
-	DeleteDebtButton = "💀 ERASE DRILL"
-	ListDebtButton   = "📜 DRILL LOG"
+	AddDebtButton    = "🌀 CONTRACT PROTOCOL"
+	EditDebtButton   = "🌀 RECALIBRATE PROTOCOL"
+	PayDebtButton    = "💥 BALANCE PROTOCOL"
+	DeleteDebtButton = "💀 ANNIHILATE PROTOCOL"
+	ListDebtButton   = "📜 REVIEW CONTRACT LOG"
 
-	EditDescButton    = "🌀 DESC"
-	EditAmountButton  = "💢 CASH"
-	EditDateButton    = "⏳ TIME"
-	ConfirmEditButton = "🌀↵ FINALIZE DRILLING"
+	EditDescButton    = "🌀 RE-SET CONTRACT NAME"
+	EditAmountButton  = "💥 RE-SET SPIRAL POWER"
+	EditDateButton    = "⏳ RE-SET TEMPORAL COORDINATES"
+	ConfirmEditButton = "🌀↵ DEPLOY MODIFIED CONTRACT"
 
-	RedirectDebtButton = "🌀↵ LOCK DILLING TARGET"
+	RedirectDebtButton = "🌀↵ LOCK DRILLING TARGET"
+
+	MsgDebtMenu = SpiralDelimiter +
+		"🌀 SPIRAL DEBT MODULE — ONLINE\n\n" +
+		"💥 YOUR DEBTS ARE NOT LIMITS —\n" +
+		"THEY ARE TARGETS FOR YOUR DRILL TO PIERCE!\n\n" +
+		"⚡ INITIATE THE BURST:\n\n" +
+		"🌀 AWAITING DRILL ORDERS!\n" +
+		SpiralDelimiter
 
 	ListDebtFormat = "%s %s\n\t" +
 		"💥 SPIRAL POWER: %s₽\n\t" +
 		"%s\n\n"
 
-	ListTotalAmountFormat = "💢 TOTAL SPIRAL POWER REQUIRED: %s₽\n\n"
-
-	ListReturnDateFormat = "⏳ D-DAY: %d DAYS REMAINING"
-
+	ListTotalAmountFormat       = "💥 TOTAL SPIRAL POWER REQUIRED: %s₽\n\n"
+	ListReturnDateFormat        = "⏳ D-DAY: %d DAYS REMAINING"
 	ListReturnDateExpiredFormat = "🚨 ANTI-SPIRAL THREAT (%d DAYS)"
+	ReturnDateNil               = "🌌 D-DAY: UNLIMITED BATTLEFIELD"
 
-	// ADD DESCRIPTION (SPIRAL CONTRACT)
-	MsgAddDescription = "🌀 INITIATING SPIRAL CONTRACT PROTOCOL...\n\n" +
-		"🌀 DECLARE CONTRACT NAME TO IGNITE THE SPIRAL"
+	MsgAddDescription = "🌀 INITIATE SPIRAL CONTRACT PROTOCOL...\n\n" +
+		"💥 INPUT CONTRACT NAME:"
 
-	MsgInvalidDescriptionEmpty = "🌀 SPIRAL CONTRACT REJECTED: NAME FIELD EMPTY!\n\n" +
-		"💥 A NAMELESS CONTRACT IS A VOID IN REALITY\n\n" +
-		"🌀 RE-ENTER WITH FOCUS AND WILLPOWER:"
+	MsgPayStart = "🌀 INITIATE SPIRAL BALANCE PROTOCOL...\n\n" +
+		"💥 SELECT SPIRAL CONTRACT TO BALANCE DRILLING"
 
-	MsgInvalidDescriptionLength = "🌀 SPIRAL CONTRACT OVERLOAD: NAME EXCEEDS LIMIT!\n\n" +
-		"💥 CURRENT: %d/1000 CHARACTERS\n\n" +
-		"🌀 COMPRESS YOUR BATTLE CHANT INTO A TIGHTER SPIRAL\n" +
-		"🌀 RE-ENTER WITH MAXIMUM DRILLING EFFICIENCY:"
+	MsgDeleteStart = "🌀 INITIATE SPIRAL ANNIHILATE PROTOCOL...\n\n" +
+		"💥 SELECT SPIRAL CONTRACT FOR ERASE DRILLING:"
 
-	// ADD AMOUNT (SPIRAL POWER)
+	MsgEditStart = "🌀 INITIATE SPIRAL RECALIBRATE PROTOCOL...\n\n" +
+		"💥 SELECT SPIRAL CONTRACT EDIT DRILLING:"
+
 	MsgAddAmount = "🌀 CONTRACT NAME LOCKED: %s\n\n" +
-		"🌀 INPUT SPIRAL POWER TO FUTURE DRILLING"
+		"🌀 INITIATE QUANTUM DRILLING!\n\n" +
+		"💥 INPUT SPIRAL POWER:"
 
-	MsgInvalidAmountEmpty = "🌀 DRILL ENERGY NOT DETECTED!\n\n" +
-		"💥 INPUT SPIRAL POWER TO IGNITE THE BURST\n\n" +
-		"🌀 RE-ENTER ENERGY OUTPUT:"
-
-	MsgInvalidAmountConvertErr = "🌀 ENERGY SIGNATURE INVALID!\n\n" +
-		"💥 ONLY POSITIVE NUMBERS CAN PIERCE THE HEAVENS\n\n" +
-		"🌀 RE-ENTER VALID SPIRAL POWER:"
-
-	// ADD DATE
 	MsgAddDate = "🌀 SPIRAL POWER LOCKED: %s₽\n\n"
 
-	MsgDateNotSet = "🌀 TEMPORAL COORDINATES MISSING!\n\n" +
-		"💥 DRILL CANNOT PIERCE THE VOID OF TIME\n\n" +
-		"🌀 RETURN TO MAIN MENU AND RE-INITIATE PROTOCOL"
+	MsgEditMenu = "🌀 RECALIBRATE PROTOCOL READY!\n\n" +
+		"CHOOSE COMPONENT TO DEEP-DRILLING:"
 
-	// ADD SAVE
-	MsgFailedToSaveDebt = "🌀 SPIRAL CONTRACT REGISTRY REJECTED OUR CHARGE!\n\n" +
-		"💥 THE UNIVERSE RESISTS OUR DRILL\n\n" +
-		"🌀 RETURNING TO SAFE MODE — CONTRACT ABORTED"
+	MsgEnterAmount = "🌀 INITIATE QUANTUM DRILLING!\n\n" +
+		"💥 INPUT NEW SPIRAL POWER:"
+	MsgEditAmount = "🌀 CORE DRILLING SUCCESS!\n\n" +
+		"💥 SPIRAL POWER RECALIBRATED TO %s₽!\n\n" +
+		"🌀 RETURNING TO RECALIBRATE DRILL SEQUENCE..."
+
+	MsgEnterDescription = "🌀 INITIATE CORE DRILLING!\n\n" +
+		"💥 INPUT NEW CONTRACT NAME:"
+	MsgEditDescription = "🌀 CORE DRILLING SUCCESS!\n\n" +
+		"💥 CONTRACT RECALIBRATED TO: %s\n\n" +
+		"🌀 RETURNING TO RECALIBRATE DRILL SEQUENCE..."
+
+	MsgEnterDate = "🌀 INITIATE TEMPORAL DRILLING!\n\n" +
+		"💥 D-DAY AWAITS YOUR COMMAND!"
+	MsgEditDate = "🌀 TEMPORAL DRILLING SUCCESS!\n\n" +
+		"💥 D-DAY RECALIBRATED TO: %s\n\n" +
+		"🌀 RETURNING TO RECALIBRATE DRILL SEQUENCE..."
 
 	MsgSavedDebt = "🌀 SPIRAL CONTRACT DEPLOYED!\n\n" +
-		"💥 NAME: %s\n" +
-		"🌀 SPIRAL POWER: %s₽\n" +
-		"⚡ D-DAY: %s\n\n" +
+		"🌀 CONTRACT: %s\n" +
+		"💥 SPIRAL POWER: %s₽\n" +
+		"⏳ D-DAY: %s\n\n" +
 		"🌀 THIS CONTRACT IS NOW PART OF THE DRILL LOG\n" +
 		"🌀 RETURNING TO COMMAND SEQUENCE..."
 
-	// DEBT: SELECTED (UNIVERSAL)
-	MsgDebtSelected = "🌀 SPIRAL CONTRACT ACQUIRED!\n\n" +
-		"💥 NAME: %s\n" +
-		"🌀 SPIRAL POWER: %s₽\n\n" +
+	MsgDebtSelected = "🌀 SPIRAL CONTRACT LOCKED!\n\n" +
+		"🌀 CONTRACT: %s\n" +
+		"💥 SPIRAL POWER: %s₽\n\n" +
 		"%s\n\n" +
-		"⚡ TARGET LOCKED — NEXT PROTOCOL PENDING\n" +
-		"🌀 CONFIRM ACTION SEQUENCE?"
+		"🌀 TARGET LOCKED — NEXT PROTOCOL PENDING\n"
 
-	// DEBT: FAILED TO EXTRACT ID
-	MsgFailedToExtractDebtId = "🚨 TARGET ID CORRUPTED!\n\n" +
-		"💥 SPIRAL CONTRACT LOCK FAILED — MATRIX INTEGRITY COMPROMISED"
-
-	// DEBT: NOT FOUND
-	MsgFailedToGetDebt = "🚨 SPIRAL CONTRACT NOT FOUND IN MATRIX!\n\n" +
-		"💥 THE TARGET HAS VANISHED FROM REALITY"
-
-	// DEBT: ACCESS DENIED
-	MsgUserIdNotEqualDebtId = "💢 DRILL COLLISION DETECTED!\n\n" +
-		"💥 THIS SPIRAL CONTRACT BELONGS TO ANOTHER PILOT\n\n" +
-		"⚠️ YOU CANNOT PIERCE ANOTHER MAN'S SOUL ⚔️"
-
-	// DELETE: START
-	MsgDeleteStart = "💥 SELECT SPIRAL CONTRACT FOR COSMIC ERASURE:"
-
-	// DELETE: CONFIRM
-	MsgConfirmDeleteWarning = "☠️ FINAL DRILL SEQUENCE INITIATED!\n\n" +
+	MsgConfirmDeleteWarning = "☠️ ANNIHILATE DRILL SEQUENCE INITIATED!\n\n" +
 		"💀 THIS WILL ERASE THE SPIRAL CONTRACT FROM EXISTENCE\n\n" +
 		"🚨 WARNING: THIS ACTION CANNOT BE UNDONE\n" +
 		"⚡ THE DRILL WILL PIERCE THROUGH SPACE-TIME\n\n" +
 		"🌀 COMMIT TOTAL ANNIHILATION?"
 
-	// DELETE: SUCCESS
 	MsgDeleteDebt = "💀 SPIRAL CONTRACT ERASED!\n\n" +
-		"🌀 NAME: %s\n" +
+		"🌀 CONTRACT: %s\n" +
 		"💥 SPIRAL POWER: %s₽\n\n" +
 		"🌀 THE CONTRACT HAS BEEN DRILLED OUT OF REALITY\n" +
 		"🌀 RETURNING TO COMMAND SEQUENCE..."
 
-	// DELETE: FAILURE
-	MsgFailedToDeleteDebt = "🚨 ANNIHILATION FAILED!\n\n" +
-		"💥 SPIRAL COLLAPSE DETECTED — UNIVERSE RESISTS OUR DRILL"
-
-	// PAY: START
-	MsgPayStart = "🌀 DEPLOY PAYMENT DRILL!\n\n" +
-		"💥 SELECT SPIRAL CONTRACT TO FUEL THE RETURN"
-
-	// PAY: INPUT AMOUNT
-	MsgEnterPayment = "🌀 INPUT PAYMENT ENERGY (SPIRAL POWER):"
-
-	// PAY: CONFIRM
-	MsgPayConfirm = "🌀 PAYMENT DRILL FINAL LOCK!\n\n" +
-		"💥 CONTRACT: %s\n\n" +
-		"🌀 INITIAL SPIRAL POWER: %s₽\n" +
-		"⚡ PAYMENT ENERGY: %s₽\n" +
+	MsgPayConfirm = "🌀 BALANCE PROTOCOL FINAL LOCK!\n\n" +
+		"🌀 CONTRACT: %s\n\n" +
+		"💥 SPIRAL POWER: %s₽\n" +
+		"🌀 PAYMENT ENERGY: %s₽\n" +
 		"💥 RESIDUAL POWER: %s₽\n\n" +
-		"🌀 INITIATE SPIRAL PAYMENT SEQUENCE?"
-
-	// PAY: ERROR
-	MsgToLargeAmount = "🚨 SPIRAL POWER EXCEEDS COSMIC LIMIT!\n\n" +
-		"💥 MAX: %s₽ — NO MORE, NO LESS"
-
-	// PAY: DELETED (ZERO)
+		"🌀 COMPLETE?"
 	MsgPayToDelete = "💥 SPIRAL CONTRACT ANNIHILATED!\n\n" +
-		"🌀 \"%s\" ERASED FROM EXISTENCE\n\n" +
+		"🌀 CONTRACT:\"%s\" ERASED FROM EXISTENCE\n\n" +
 		"🌀 RETURNING TO COMMAND SEQUENCE..."
-
-	// PAY: UPDATED (RESIDUAL)
 	MsgPayToUpdate = "🌀 IF THE DEBT IS THIS BIG…\n" +
 		"THEN OUR DRILL MUST BE EVEN BIGGER!\n\n" +
-		"💥 CONTRACT: %s\n" +
-		"⚡ RESIDUAL SPIRAL POWER: %s₽\n\n" +
+		"🌀 CONTRACT: %s\n" +
+		"💥 RESIDUAL SPIRAL POWER: %s₽\n\n" +
 		"🌀 RETURNING TO COMMAND SEQUENCE..."
 
-	// EDIT: START
-	MsgEditStart = "🌀 SELECT SPIRAL CONTRACT FOR REALITY EDITING DRILL:"
-
-	// EDIT: MENU
-	MsgEditMenu = "🌀 DRILL BIT SELECTION REQUIRED!\n\n" +
-		"CHOOSE COMPONENT TO DEEP-DRILL:"
-
-	// EDIT: AMOUNT
-	MsgEnterAmount = "🌀 INITIATE QUANTUM DRILLING!\n\n" +
-		"💥 INPUT NEW SPIRAL POWER:"
-
-	MsgEditAmount = "⚡ SPIRAL POWER RECALIBRATED TO %s₽!\n\n" +
-		"🌀 RETURNING TO EDITORIAL DRILL SEQUENCE..."
-
-	// EDIT: DESCRIPTION
-	MsgEnterDescription = "🌀 INITIATE SPIRAL CONTRACT DRILLING SEQUENCE!\n\n" +
-		"💥 INPUT NEW CONTRACT NAME:"
-
-	MsgEditDescription = "🌀 CORE DRILLING SUCCESS!\n\n" +
-		"💥 NEW CONTRACT: %s\n\n" +
-		"🌀 RETURNING TO EDITORIAL DRILL SEQUENCE..."
-
-	// EDIT: DATE
-	MsgEditDate = "🌀 TEMPORAL COORDINATES UPDATED!\n\n" +
-		"💥 NEW D-DAY: %s\n\n" +
-		"🌀 RETURNING TO EDITORIAL DRILL SEQUENCE..."
-
-	// EDIT: FINISH
-	MsgFinishEdit = "🌀 ULTRA DRILLING SEQUENCE COMPLETE!\n\n" +
+	MsgFinishEdit = "🌀 RECALIBRATE PROTOCOL COMPLETE!\n\n" +
 		"💥 SPIRAL CONTRACT: %s\n" +
 		"🌀 SPIRAL POWER: %s₽\n\n" +
-		"💢 WHO THE HELL DO YOU THINK WE ARE?! OUR DRILL PIERCED THROUGH REALITY ITSELF!\n" +
+		"%s\n\n" +
 		"🌀 RETURNING TO COMMAND SEQUENCE..."
 
-	// EDIT: ERROR
-	MsgFailedToUpdateDebt = "🚨 CATASTROPHIC DRILL FAILURE!\n\n" +
-		"💥 THE UNIVERSE RESISTED OUR PIERCING\n" +
-		"🌀 RETURNING TO SAFE MODE..."
+	MsgInvalidDescriptionEmpty = SpiralDelimiter +
+		"🚨 SPIRAL CONTRACT REJECTED: NAME FIELD EMPTY!\n\n" +
+		"💥 A NAMELESS CONTRACT IS A VOID IN REALITY\n\n" +
+		"🌀 RE-ENTER WITH FOCUS:\n" +
+		SpiralDelimiter
 
-	ReturnDateNil = "🌌 D-DAY: UNLIMITED BATTLEFIELD"
+	MsgInvalidDescriptionLength = SpiralDelimiter +
+		"🚨 SPIRAL CONTRACT REJECTED: NAME EXCEEDS LIMIT!\n\n" +
+		"💥 CURRENT: %d/1000 CHARACTERS\n" +
+		"⚠️ COMPRESS YOUR BATTLE CHANT INTO A TIGHTER SPIRAL\n\n" +
+		"🌀 RE-ENTER WITH MAXIMUM DRILLING EFFICIENCY:\n" +
+		SpiralDelimiter
 
-	MsgMenu = "🌀 SPIRAL DEBT COMMAND CENTER ONLINE\n" +
-		"AWAITING DRILL ORDERS!"
+	MsgInvalidAmountEmpty = SpiralDelimiter +
+		"🚨 SPIRAL ENERGY SIGNATURE INVALID!\n\n" +
+		"💥 INPUT LOST IN THE VOID\n\n" +
+		"⚠️ INPUT SPIRAL POWER TO IGNITE THE BURST\n\n" +
+		"🌀 RE-ENTER VALID SPIRAL POWER:\n" +
+		SpiralDelimiter
 
-	FailedToGetDebts = "🚨 SPIRAL MATRIX OFFLINE! FAILED TO SCAN CONTRACTS!\n" +
-		"REBOOTING DRILL PROTOCOLS..."
+	MsgInvalidAmountConvertErr = SpiralDelimiter +
+		"🚨 SPIRAL ENERGY SIGNATURE INVALID!\n\n" +
+		"💥 ONLY POSITIVE NUMBERS CAN PIERCE THE HEAVENS\n\n" +
+		"🌀 RE-ENTER VALID SPIRAL POWER:\n" +
+		SpiralDelimiter
+
+	MsgToLargeAmount = SpiralDelimiter +
+		"🚨 SPIRAL ENERGY SIGNATURE INVALID!\n\n" +
+		"💥 SPIRAL POWER EXCEEDS COSMIC LIMIT!\n" +
+		"⚠️ MAX: %s₽ — NO MORE, NO LESS\n\n" +
+		"🌀 RE-ENTER VALID SPIRAL POWER:\n" +
+		SpiralDelimiter
+
+	MsgDateNotSet = SpiralDelimiter +
+		"🚨 TEMPORAL COORDINATES LOST!\n\n" +
+		"💥 DRILL CANNOT PIERCE THE VOID OF TIME\n\n" +
+		"🌀 RETURNING TO CORE PROTOCOL...\n" +
+		SpiralDelimiter
+
+	MsgFailedToExtractDebtId = SpiralDelimiter +
+		"🚨 SPIRAL SYNC FAILED!\n\n" +
+		"💥 CONTRACT IDENTIFIER CORRUPTED!\n" +
+		"⚠️ SPIRAL CONTRACT LOCK FAILED — MATRIX INTEGRITY COMPROMISED\n\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	MsgFailedToGetDebt = SpiralDelimiter +
+		"🚨 SPIRAL SYNC FAILED!\n\n" +
+		"💥 SPIRAL CONTRACT NOT FOUND IN MATRIX!\n\n" +
+		"⚠️ THE TARGET HAS VANISHED FROM REALITY\n\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	MsgUserIdNotEqualDebtId = SpiralDelimiter +
+		"🚨 DRILL COLLISION DETECTED!\n\n" +
+		"💥 THIS SPIRAL CONTRACT BELONGS TO ANOTHER PILOT\n\n" +
+		"⚠️ YOU CANNOT PIERCE ANOTHER MAN'S SOUL ⚔️\n\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	MsgFailedToSaveDebt = SpiralDelimiter +
+		"🚨 SPIRAL CONTRACT REGISTRY REJECTED!\n\n" +
+		"💥 DRILLING FAILURE!\n\n" +
+		"⚠️ SPIRAL COLLAPSE DETECTED — UNIVERSE RESISTS OUR DRILL\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	MsgFailedToDeleteDebt = SpiralDelimiter +
+		"🚨 SPIRAL CONTRACT ANNIHILATION REJECTED!\n\n" +
+		"💥 DRILLING FAILURE!\n\n" +
+		"⚠️ SPIRAL COLLAPSE DETECTED — UNIVERSE RESISTS OUR DRILL\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	MsgFailedToUpdateDebt = SpiralDelimiter +
+		"🚨 SPIRAL CONTRACT RE-DEPLOYMENT REJECTED!\n\n" +
+		"💥 DRILLING FAILURE!\n\n" +
+		"⚠️ SPIRAL COLLAPSE DETECTED — UNIVERSE RESISTS OUR DRILL\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
+
+	FailedToGetDebts = SpiralDelimiter +
+		"🚨 SPIRAL CORE CORRUPTED!\n\n" +
+		"💥 SPIRAL MATRIX OFFLINE!\n" +
+		"⚠️ FAILED TO SCAN CONTRACTS!\n\n" +
+		"🌀 REBOOTING DRILL PROTOCOLS...\n" +
+		SpiralDelimiter
 )
 
 var (
@@ -389,18 +471,20 @@ const (
 		"🌀 D-DAY AWAITS YOUR COMMAND!"
 
 	MsgSetYear = "🌀 YEAR DRILL ENGAGED!\n\n" +
-		"⏳ SELECT DESTINATION YEAR ⏳"
+		"⏳ SELECT DESTINATION YEAR"
 
 	MsgSetMonth = "🌀 YEAR %d LOCKED!\n\n" +
-		"⏳ SELECT DESTINATION MONTH ⏳"
+		"⏳ SELECT DESTINATION MONTH"
 
 	MsgSetDay = "🌀 MONTH %s LOCKED!\n\n" +
-		"⏳ SELECT DESTINATION DAY ⏳"
+		"⏳ SELECT DESTINATION DAY"
 
-	MsgEmptyDay = "💢 TIME PARADOX DETECTED! 💢\n\n" +
-		"🚨 SPECIFIED MONTH DOESN'T EXIST\n" +
-		"💢 YOUR DRILL PIERCED A TIME HOLE\n" +
-		"🚨 RE-INITIATE DATE INPUT FROM START!"
+	MsgEmptyDay = SpiralDelimiter +
+		"🚨 TIME PARADOX DETECTED!\n\n" +
+		"💥 SPECIFIED MONTH DOESN'T EXIST\n" +
+		"⚠️ YOUR DRILL PIERCED A TIME HOLE\n" +
+		"🌀 RE-INITIATE DATE INPUT FROM START!\n" +
+		SpiralDelimiter
 
 	MsgRedirect = "⏳ TEMPORAL COORDINATES LOCKED!\n\n" +
 		"🌀 YEAR: %d\n" +
@@ -408,27 +492,40 @@ const (
 		"🌀 DAY: %d\n\n" +
 		"⏳ TEMPORAL-DRILL PRIMED FOR DEPLOYMENT!"
 
-	MsgFailedRedirection = "🌀 THE SPIRAL HAS NO DIRECTION!\n\n" +
+	MsgFailedRedirection = SpiralDelimiter +
+		"🚨 THE SPIRAL HAS NO DIRECTION!\n\n" +
 		"💥 IT DOES NOT ASCEND\n" +
 		"💥 IT DOES NOT RETREAT\n\n" +
 		"⚠️ THIS DRILL SEQUENCE EXISTS IN VOID\n\n" +
-		"🌀 ABORTING — RETURNING TO SAFE REALITY..."
+		"🌀 ABORTING — RETURNING TO SAFE REALITY...\n" +
+		SpiralDelimiter
 
-	MsgInvalidYear = "💢 TEMPORAL ANOMALY DETECTED!\n\n" +
-		"🚨 INVALID YEAR FORMAT! TRY AGAIN!"
+	MsgInvalidYear = SpiralDelimiter +
+		"🚨 TEMPORAL ANOMALY DETECTED!\n\n" +
+		"💥 INVALID YEAR FORMAT!\n" +
+		"🌀 RE-DRILLING YEAR!\n" +
+		SpiralDelimiter
 
-	MsgInvalidMonth = "💢 TEMPORAL ANOMALY DETECTED!\n\n" +
-		"🚨 INVALID MONTH FORMAT! TRY AGAIN!"
+	MsgInvalidMonth = SpiralDelimiter +
+		"🚨 TEMPORAL ANOMALY DETECTED!\n\n" +
+		"💥 INVALID MONTH FORMAT!\n" +
+		"🌀 RE-DRILLING MONTH!\n" +
+		SpiralDelimiter
 
-	MsgInvalidDay = "💢 TEMPORAL ANOMALY DETECTED!\n\n" +
-		"🚨 INVALID DAY FORMAT! TRY AGAIN!"
+	MsgInvalidDay = SpiralDelimiter +
+		"🚨 TEMPORAL ANOMALY DETECTED!\n\n" +
+		"💥 INVALID DAY FORMAT!\n" +
+		"🌀 RE-DRILLING DATE!\n" +
+		SpiralDelimiter
 
-	MsgDateInPast = "💢 TEMPORAL ANOMALY DETECTED!\n\n" +
-		"📍 CURRENT DRILL TIMESTAMP: %s\n\n" +
-		"💢 ATTEMPTED PAST-DRILLING: %s\n\n" +
-		"🚫 TEMPORAL PROTOCOL VIOLATION: PAST DRILLING FORBIDDEN\n\n" +
+	MsgDateInPast = SpiralDelimiter +
+		"🚨 TEMPORAL ANOMALY DETECTED!\n\n" +
+		"💥 CURRENT DRILL TIMESTAMP: %s\n\n" +
+		"💥 ATTEMPTED PAST-DRILLING: %s\n\n" +
+		"⚠️ TEMPORAL PROTOCOL VIOLATION: PAST DRILLING FORBIDDEN\n\n" +
 		"🌀 ONLY FUTURE DRILLING PERMITTED\n\n" +
-		"🌀 RESTART TEMPORAL DRILL PROTOCOL..."
+		"🌀 RESTART TEMPORAL DRILL PROTOCOL...\n" +
+		SpiralDelimiter
 
 	SelectDateButton = "⏳ SET D-DAY"
 

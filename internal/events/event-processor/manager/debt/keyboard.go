@@ -43,10 +43,14 @@ func (h *Handler) menuKeyboard() (bot.ReplyMarkup, error) {
 	return bot.NewInlineKeyboard([][]bot.InlineKeyboardButton{
 		{
 			{Text: manager.AddDebtButton, CallbackData: addCb},
+		},
+		{
 			{Text: manager.EditDebtButton, CallbackData: editCb},
 		},
 		{
 			{Text: manager.PayDebtButton, CallbackData: payCb},
+		},
+		{
 			{Text: manager.DeleteDebtButton, CallbackData: deleteCb},
 		},
 		{
@@ -69,7 +73,7 @@ func (h *Handler) editKeyboard() (bot.ReplyMarkup, error) {
 		return bot.ReplyMarkup{}, err
 	}
 
-	dateEditCb, err := manager.CreateCallBack(manager.DebtHandler, manager.StepEditDate, "")
+	dateEditCb, err := manager.CreateCallBack(manager.DebtHandler, manager.StepEnterDate, "")
 	if err != nil {
 		return bot.ReplyMarkup{}, err
 	}
@@ -87,11 +91,17 @@ func (h *Handler) editKeyboard() (bot.ReplyMarkup, error) {
 	return bot.NewInlineKeyboard([][]bot.InlineKeyboardButton{
 		{
 			{Text: manager.EditDescButton, CallbackData: descriptionEditCb},
+		},
+		{
 			{Text: manager.EditAmountButton, CallbackData: amountEditCb},
+		},
+		{
 			{Text: manager.EditDateButton, CallbackData: dateEditCb},
 		},
 		{
 			{Text: manager.ConfirmEditButton, CallbackData: confirmEditCb},
+		},
+		{
 			{Text: manager.CancelButton, CallbackData: cancelCb},
 		},
 	}), nil

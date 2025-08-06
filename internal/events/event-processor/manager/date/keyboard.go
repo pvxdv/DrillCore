@@ -89,11 +89,11 @@ func (h *Handler) monthKeyboard(backH manager.TypeHandler, backS manager.Step) (
 	var rows [][]bot.InlineKeyboardButton
 	var row []bot.InlineKeyboardButton
 
-	for buttonText, month := range monthButtonMap {
+	for _, month := range monthOrder {
 		callbackData, err := manager.CreateCallBack(
 			manager.DateHandler,
 			manager.StepMonth,
-			buttonText,
+			month,
 		)
 		if err != nil {
 			h.logger.Errorf("failed to create callback for month %s: %v", month, err)
@@ -101,7 +101,7 @@ func (h *Handler) monthKeyboard(backH manager.TypeHandler, backS manager.Step) (
 		}
 
 		row = append(row, bot.InlineKeyboardButton{
-			Text:         buttonText,
+			Text:         month,
 			CallbackData: callbackData,
 		})
 

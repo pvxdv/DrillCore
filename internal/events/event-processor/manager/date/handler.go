@@ -50,6 +50,21 @@ var (
 		"SUN",
 	}
 
+	monthOrder = []string{
+		"🌀 JAN",
+		"🌀 FEB",
+		"🌀 MAR",
+		"🌀 APR",
+		"🌀 MAY",
+		"🌀 JUN",
+		"🌀 JUL",
+		"🌀 AUG",
+		"🌀 SEP",
+		"🌀 OCT",
+		"🌀 NOV",
+		"🌀 DEC",
+	}
+
 	monthButtonMap = map[string]time.Month{
 		"🌀 JAN": time.January,
 		"🌀 FEB": time.February,
@@ -182,7 +197,12 @@ func (h *Handler) year(ctx context.Context, e *events.Event, state *manager.Stat
 
 		h.cleanupSession(ctx, e.Meta.ChatID)
 
-		return h.tg.SendMessage(ctx, e.Meta.ChatID, manager.MsgInvalidYear)
+		return h.tg.SendMessageWithKeyboard(
+			ctx,
+			e.Meta.ChatID,
+			manager.MsgInvalidYear,
+			kb,
+		)
 	}
 
 	now := time.Now().UTC()
@@ -331,21 +351,21 @@ func (h *Handler) month(ctx context.Context, e *events.Event, state *manager.Sta
 }
 
 func (h *Handler) day(ctx context.Context, e *events.Event, state *manager.State, ses *session.Session, cb *manager.CallBack) error {
+	kb, err := h.dateKeyboard(state.NextHandler)
+	if err != nil {
+		h.logger.Errorf("failed to create month keyboard for user: %d", e.Meta.ChatID)
+
+		h.cleanupSession(ctx, e.Meta.ChatID)
+
+		return h.tg.SendMessage(
+			ctx,
+			e.Meta.ChatID,
+			manager.FailedToCreateKeyboard,
+		)
+	}
+
 	if cb.Data == "" {
 		h.logger.Errorf("failed to get data for day step for user: %d", e.Meta.ChatID)
-
-		kb, err := h.dateKeyboard(state.NextHandler)
-		if err != nil {
-			h.logger.Errorf("failed to create month keyboard for user: %d", e.Meta.ChatID)
-
-			h.cleanupSession(ctx, e.Meta.ChatID)
-
-			return h.tg.SendMessage(
-				ctx,
-				e.Meta.ChatID,
-				manager.FailedToCreateKeyboard,
-			)
-		}
 
 		return h.tg.SendMessageWithKeyboard(
 			ctx,
@@ -361,7 +381,12 @@ func (h *Handler) day(ctx context.Context, e *events.Event, state *manager.State
 
 		h.cleanupSession(ctx, e.Meta.ChatID)
 
-		return h.tg.SendMessage(ctx, e.Meta.ChatID, manager.MsgInvalidDay)
+		return h.tg.SendMessageWithKeyboard(
+			ctx,
+			e.Meta.ChatID,
+			manager.MsgInvalidDay,
+			kb,
+		)
 	}
 
 	now := time.Now().UTC()
@@ -407,7 +432,7 @@ func (h *Handler) day(ctx context.Context, e *events.Event, state *manager.State
 		return h.tg.SendMessage(ctx, e.Meta.ChatID, manager.MsgFailedToSetSession)
 	}
 
-	kb, err := h.redirectKeyboard(state.BackHandler, state.BackStep, state.NextHandler, state.NextStep)
+	kb, err = h.redirectKeyboard(state.BackHandler, state.BackStep, state.NextHandler, state.NextStep)
 	if err != nil {
 		h.logger.Errorf("failed to create redirect keyboard for user: %d", e.Meta.ChatID)
 

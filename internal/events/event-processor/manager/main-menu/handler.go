@@ -22,14 +22,25 @@ type Handler struct {
 	tg     *bot.Client
 	sesMng SessionManager
 	logger *zap.SugaredLogger
+
+	mainMenuKeyBoard bot.ReplyMarkup
 }
 
 func New(tg *bot.Client, sm SessionManager, logger *zap.SugaredLogger) *Handler {
-	return &Handler{
+	h := &Handler{
 		tg:     tg,
 		sesMng: sm,
 		logger: logger,
 	}
+
+	kb, err := h.mainKeyboard()
+	if err != nil {
+		h.logger.Fatal(err)
+	}
+
+	h.mainMenuKeyBoard = kb
+
+	return h
 }
 
 func (h *Handler) Type() manager.TypeHandler {
@@ -58,18 +69,9 @@ func (h *Handler) Handle(ctx context.Context, e *events.Event) error {
 		)
 	}
 
-	kb, err := h.mainKeyboard()
-	if err != nil {
-		return h.tg.SendMessage(
-			ctx,
-			e.Meta.ChatID,
-			manager.FailedToCreateKeyboard,
-		)
-	}
-
 	switch cb.Step {
 	case manager.StepStart:
-		return h.tg.SendMessageWithKeyboard(ctx, e.Meta.ChatID, manager.MsgMainMenu, kb)
+		return h.tg.SendMessageWithKeyboard(ctx, e.Meta.ChatID, manager.MsgMainMenu, h.mainMenuKeyBoard)
 
 	default:
 		return h.tg.SendMessage(

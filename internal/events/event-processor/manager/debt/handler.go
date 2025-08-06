@@ -491,6 +491,8 @@ func (h *Handler) deleteConfirm(ctx context.Context, chatID, userID int) error {
 
 	kb, err := h.confirmKeyboard(manager.StepDeleteFinish)
 	if err != nil {
+		h.cleanupSession(ctx, userID)
+
 		return h.tg.SendMessage(
 			ctx,
 			chatID,
@@ -561,7 +563,7 @@ func (h *Handler) enterPayment(ctx context.Context, chatID, userID int) error {
 	return h.tg.SendMessage(
 		ctx,
 		chatID,
-		manager.MsgEnterPayment,
+		manager.MsgEnterAmount,
 	)
 }
 
@@ -622,6 +624,7 @@ func (h *Handler) payAmount(ctx context.Context, e *events.Event, ses *session.S
 
 	confirmKb, err := h.confirmKeyboard(manager.StepPayFinish)
 	if err != nil {
+		h.cleanupSession(ctx, e.Meta.UserID)
 		return h.tg.SendMessage(
 			ctx,
 			e.Meta.ChatID,
@@ -897,7 +900,7 @@ func (h *Handler) enterDate(ctx context.Context, chatID, userID int) error {
 	return h.tg.SendMessageWithKeyboard(
 		ctx,
 		chatID,
-		manager.MsgStartDateFlow,
+		manager.MsgEnterDate,
 		kb,
 	)
 }
@@ -974,6 +977,7 @@ func (h *Handler) editFinish(ctx context.Context, chatID, userID int) error {
 			manager.MsgFinishEdit,
 			strings.ToUpper(state.TempDebt.Description),
 			formatMoney(state.TempDebt.Amount),
+			debtStatus(state.TempDebt),
 		),
 		h.menuKeyBoard,
 	)
@@ -1029,6 +1033,8 @@ func (h *Handler) beforeSelect(ctx context.Context, chatID, userID int, backH ma
 
 	kb, err := h.selectKeyboard(sDebts)
 	if err != nil {
+		h.cleanupSession(ctx, userID)
+
 		return h.tg.SendMessage(
 			ctx,
 			chatID,
@@ -1108,6 +1114,8 @@ func (h *Handler) selectDebt(ctx context.Context, chatID, userID int, data strin
 
 	redirectKb, err := h.redirectKeyboard(state.BackHandler, state.BackStep, state.NextHandler, state.NextStep)
 	if err != nil {
+		h.cleanupSession(ctx, userID)
+
 		return h.tg.SendMessage(
 			ctx,
 			chatID,
@@ -1134,7 +1142,7 @@ func (h *Handler) debtStart(ctx context.Context, chatID int, userID int) error {
 	return h.tg.SendMessageWithKeyboard(
 		ctx,
 		chatID,
-		manager.MsgMenu,
+		manager.MsgDebtMenu,
 		h.menuKeyBoard,
 	)
 }

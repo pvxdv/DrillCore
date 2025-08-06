@@ -88,10 +88,11 @@ func (h *Handler) Handle(ctx context.Context, e *events.Event) error {
 		return h.tg.SendMessageWithKeyboard(ctx, e.Meta.ChatID, manager.MsgCMDTask, h.mainKB)
 
 	default:
-		return h.tg.SendMessage(
+		return h.tg.SendMessageWithKeyboard(
 			ctx,
 			e.Meta.ChatID,
 			manager.InvalidCommand,
+			h.mainKB,
 		)
 	}
 }
